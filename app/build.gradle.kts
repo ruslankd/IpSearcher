@@ -2,16 +2,18 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.dagger.hilt)
+    alias(libs.plugins.kapt)
 }
 
 android {
     namespace = "ru.kabirov.ipsearcher"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "ru.kabirov.ipsearcher"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -41,6 +43,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.dagger.hilt)
+    kapt(libs.dagger.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -54,4 +58,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":core:uikit"))
+    implementation(project(":core:ripe-api"))
 }
