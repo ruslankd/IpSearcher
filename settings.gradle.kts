@@ -23,3 +23,4 @@ rootProject.name = "IpSearcher"
 include(":app")
 include(":core:ripe-api")
 include(":core:uikit")
+include(":features:searcher-main")
