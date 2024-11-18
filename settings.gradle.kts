@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "IpSearcher"
 include(":app")
+include(":core:ripe-api")
+include(":core:uikit")
