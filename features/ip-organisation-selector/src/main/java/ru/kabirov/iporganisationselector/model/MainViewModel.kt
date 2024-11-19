@@ -1,4 +1,4 @@
-package ru.kabirov.iporganisationselector
+package ru.kabirov.iporganisationselector.model
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
 
     fun onSearchClick() {
         if (ipAddressValidator.isValidIpAddress(_query.value)) {
-
+            _navigator.value = NavClass.Inetnum(_query.value.lowercase())
         } else {
             _navigator.value = NavClass.IpAddresses(_query.value.lowercase())
         }

@@ -9,4 +9,7 @@ sealed class NavClass {
 
     @Serializable
     data class IpAddresses(val query: String) : NavClass()
+
+    @Serializable
+    data class Inetnum(val ipAddress: String) : NavClass()
 }

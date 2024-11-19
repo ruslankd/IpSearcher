@@ -1,4 +1,4 @@
-package ru.kabirov.iporganisationselector
+package ru.kabirov.iporganisationselector.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +17,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import ru.kabirov.iporganisationselector.model.MainViewModel
 import ru.kabirov.iporganisationselector.navigation.NavClass
+import ru.kabirov.searcherbyip.presentation.ui.InetnumScreen
 import ru.kabirov.serchermain.ui.IpAddressesScreen
 
 @Composable
@@ -31,6 +33,10 @@ fun MainScreen(
 
     LaunchedEffect(navigator) {
         if (navigator is NavClass.IpAddresses) {
+            navController.navigate(navigator) {
+                popUpTo(0)
+            }
+        } else if (navigator is NavClass.Inetnum) {
             navController.navigate(navigator) {
                 popUpTo(0)
             }
@@ -53,6 +59,9 @@ fun MainScreen(
             }
             composable<NavClass.IpAddresses> { backStackEntry ->
                 IpAddressesScreen(backStackEntry.toRoute<NavClass.IpAddresses>().query)
+            }
+            composable<NavClass.Inetnum> { backStackEntry ->
+                InetnumScreen(backStackEntry.toRoute<NavClass.Inetnum>().ipAddress)
             }
         }
     }

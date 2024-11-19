@@ -34,7 +34,7 @@ interface RipeApi {
     suspend fun baseDtoByIp(
         @Query("type-filter") typeFilter: String = "inetnum",
         @Query("source") source: String = "ripe",
-        @Query("query-string") ip: String,
+        @Query("query-string") ipAddress: String,
         @Query("flags") flags: String = "no-referenced",
     ): BaseDto
 }

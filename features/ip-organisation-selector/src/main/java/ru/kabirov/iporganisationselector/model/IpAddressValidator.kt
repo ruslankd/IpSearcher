@@ -1,4 +1,4 @@
-package ru.kabirov.iporganisationselector
+package ru.kabirov.iporganisationselector.model
 
 import java.util.regex.Pattern
 
