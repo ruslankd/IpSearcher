@@ -59,5 +59,6 @@ dependencies {
 
     implementation(project(":core:uikit"))
     implementation(project(":core:ripe-api"))
+    implementation(project(":core:database"))
     implementation(project(":features:searcher-main"))
 }
