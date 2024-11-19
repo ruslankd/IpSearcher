@@ -8,20 +8,19 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.kabirov.ripeapi.RipeApi
-import ru.kabirov.ripeapi.models.BaseDto
 import javax.inject.Inject
 
 @HiltViewModel
 class SearcherViewModel @Inject internal constructor(
-    ripeApi: RipeApi
+    private val ripeApi: RipeApi
 ) : ViewModel() {
     var state by mutableStateOf<List<String>>(emptyList())
 
-    init {
+    fun init(query: String) {
         viewModelScope.launch {
             state =
-                ripeApi.baseDtoByIdOrganisation(idOrganisation = "ORG-JR8-RIPE").objects?.obj?.map {
-                    it.primaryKey?.attribute?.first()?.value ?: ""
+                ripeApi.baseDtoByNameOrganisation(name = query).objects?.obj?.map {
+                    it.attributes?.attribute?.get(1)?.value ?: ""
                 } ?: emptyList()
         }
     }

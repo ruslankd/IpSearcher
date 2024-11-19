@@ -23,5 +23,6 @@ rootProject.name = "IpSearcher"
 include(":app")
 include(":core:ripe-api")
 include(":core:uikit")
-include(":features:searcher-main")
+include(":features:searcher-by-org")
 include(":core:database")
+include(":features:ip-organisation-selector")

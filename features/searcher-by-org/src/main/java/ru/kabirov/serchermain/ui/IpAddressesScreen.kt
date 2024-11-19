@@ -5,14 +5,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.kabirov.serchermain.model.SearcherViewModel
 
 @Composable
-fun SearcherScreen(vm: SearcherViewModel = hiltViewModel()) {
+fun IpAddressesScreen(
+    query: String,
+    viewModel: SearcherViewModel = hiltViewModel(),
+) {
+    LaunchedEffect(Unit) {
+        viewModel.init(query)
+    }
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(vm.state) {
+        items(viewModel.state) {
             Text(text = it)
         }
     }

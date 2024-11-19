@@ -2,7 +2,6 @@ package ru.kabirov.ripeapi
 
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
@@ -26,7 +25,7 @@ interface RipeApi {
     suspend fun baseDtoByNameOrganisation(
         @Query("type-filter") typeFilter: String = "organisation",
         @Query("source") source: String = "ripe",
-        @Query("query-string") queryString: String,
+        @Query("query-string") name: String,
         @Query("flags") flags: String = "no-referenced",
     ): BaseDto
 
