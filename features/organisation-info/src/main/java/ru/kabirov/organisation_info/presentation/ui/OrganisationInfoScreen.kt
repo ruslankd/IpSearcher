@@ -1,9 +1,12 @@
-package ru.kabirov.searcherbyip.presentation.ui
+package ru.kabirov.organisation_info.presentation.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
@@ -16,37 +19,33 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ru.kabirov.searcherbyip.R
-import ru.kabirov.searcherbyip.presentation.viewmodel.UiState
-import ru.kabirov.searcherbyip.presentation.viewmodel.SubnetViewModel
+import ru.kabirov.organisation_info.presentation.viewmodel.OrganisationInfoViewModel
+import ru.kabirov.organisation_info.presentation.viewmodel.UiState
 
 @Composable
-fun SubnetScreen(
-    ipAddress: String,
-    viewModel: SubnetViewModel = hiltViewModel(
-        creationCallback = { factory: SubnetViewModel.SubnetViewModelFactory ->
-            factory.create(ipAddress)
+fun OrganisationInfoScreen(
+    orgId: String,
+    viewModel: OrganisationInfoViewModel = hiltViewModel(
+        creationCallback = { factory: OrganisationInfoViewModel.OrganisationInfoViewModelFactory ->
+            factory.create(orgId)
         }
     ),
-    onSubnetClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    SubnetContent(modifier = modifier, state = state, onSubnetClick = onSubnetClick)
-
+    OrganisationInfoContent(modifier = modifier, state = state)
 }
 
 @Composable
-fun SubnetContent(
+fun OrganisationInfoContent(
     state: UiState,
-    onSubnetClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         when (state) {
             is UiState.None -> Unit
-            is UiState.Success -> SubnetInfo(state, onSubnetClick, modifier)
+            is UiState.Success -> OrganisationInfo(state, modifier)
             is UiState.Error -> ErrorMessage(state, modifier)
             is UiState.Loading -> ProgressIndicator(modifier)
         }
@@ -54,32 +53,22 @@ fun SubnetContent(
 }
 
 @Composable
-fun SubnetInfo(
+fun OrganisationInfo(
     state: UiState.Success,
-    onSubnetClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val subnet = state.subnet
+    val organisation = state.organisation
 
     Box(modifier = modifier) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                if (subnet.orgId == null) {
-                    Toast
-                        .makeText(
-                            context,
-                            context.getString(R.string.not_affiliated_with_any_organization),
-                            Toast.LENGTH_LONG
-                        )
-                        .show()
-                } else {
-                    onSubnetClick(subnet.orgId!!)
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(text = organisation.name)
+                Spacer(modifier = Modifier.weight(1f))
+                organisation.country?.let {
+                    Text(text = it)
                 }
-            }) {
-            Text(text = subnet.subnet)
-            Text(text = subnet.subnetName)
+            }
         }
     }
 }

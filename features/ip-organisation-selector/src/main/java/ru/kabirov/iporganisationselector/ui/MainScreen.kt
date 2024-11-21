@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import ru.kabirov.iporganisationselector.model.MainViewModel
 import ru.kabirov.iporganisationselector.navigation.NavClass
+import ru.kabirov.organisation_info.presentation.ui.OrganisationInfoScreen
 import ru.kabirov.searcherbyip.presentation.ui.SubnetScreen
 import ru.kabirov.serchermain.ui.IpAddressesScreen
 
@@ -80,7 +81,10 @@ fun MainScreen(
                 )
             }
             composable<NavClass.OrganisationInfo> { backStackEntry ->
-
+                OrganisationInfoScreen(
+                    orgId = backStackEntry.toRoute<NavClass.OrganisationInfo>().orgId,
+                    modifier = modifier,
+                )
             }
         }
     }

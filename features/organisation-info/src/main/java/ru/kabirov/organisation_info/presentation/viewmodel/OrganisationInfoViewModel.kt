@@ -1,4 +1,4 @@
-package ru.kabirov.searcherbyip.presentation.viewmodel
+package ru.kabirov.organisation_info.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,21 +12,20 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import ru.kabirov.data.IpAddressRepository
 
-@HiltViewModel(assistedFactory = SubnetViewModel.SubnetViewModelFactory::class)
-class SubnetViewModel @AssistedInject constructor(
+@HiltViewModel(assistedFactory = OrganisationInfoViewModel.OrganisationInfoViewModelFactory::class)
+class OrganisationInfoViewModel @AssistedInject constructor(
     ipAddressRepository: IpAddressRepository,
-    @Assisted ipAddress: String,
+    @Assisted orgId: String,
 ) : ViewModel() {
     var state: StateFlow<UiState> = ipAddressRepository
-        .getSubnetByIp(ipAddress)
+        .getOrganisationById(orgId)
         .map {
             it.toUiState()
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, UiState.None)
 
-
     @AssistedFactory
-    interface SubnetViewModelFactory {
-        fun create(ipAddress: String): SubnetViewModel
+    interface OrganisationInfoViewModelFactory {
+        fun create(orgId: String): OrganisationInfoViewModel
     }
 }

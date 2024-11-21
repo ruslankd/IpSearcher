@@ -16,10 +16,10 @@ interface IpSearcherDao {
     suspend fun getOrganisationsByName(query: String): List<OrganisationDbo>
 
     @Query("SELECT organisation_id FROM subnet WHERE inet_num = :subnet")
-    suspend fun getOrganisationIdBySubnet(subnet: String): String
+    fun getOrganisationIdBySubnet(subnet: String): Flow<String>
 
     @Query("SELECT * FROM organisation WHERE id = :id")
-    suspend fun getOrganisationById(id: String): OrganisationDbo?
+    fun getOrganisationById(id: String): Flow<OrganisationDbo?>
 
     @Query("SELECT * FROM subnet")
     suspend fun getAllSubnets(): List<SubnetDbo>

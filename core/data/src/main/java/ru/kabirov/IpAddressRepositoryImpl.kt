@@ -1,16 +1,13 @@
 package ru.kabirov
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
 import ru.kabirov.data.IpAddressRepository
 import ru.kabirov.data.RequestResult
-import ru.kabirov.data.map
 import ru.kabirov.data.mapper.toOrganisation
 import ru.kabirov.data.mapper.toOrganisationDbo
 import ru.kabirov.data.mapper.toSubnet
@@ -74,36 +71,26 @@ class IpAddressRepositoryImpl @Inject constructor(
         return null
     }
 
-    private fun isIpInSubnet(ip: String, subnet: Subnet): Boolean {
-        val ipLong = ipToLong(ip)
-
-        val (startIpLong, endIpLong) = subnet.subnet.split(" - ").map { ipToLong(it) }
-
-        return ipLong in startIpLong..endIpLong
-    }
-
-    override suspend fun getOrganisationBySubnet(subnet: String): Flow<RequestResult<Organisation>> {
-        val cachedOrganisationId = database.ipSearcherDao.getOrganisationIdBySubnet(subnet)
-        val cachedOrganisation = database.ipSearcherDao.getOrganisationById(cachedOrganisationId)
-        return if (cachedOrganisation == null) {
-            getOrganisationByIdFromServer(subnet)
-        } else {
-            flowOf(RequestResult.Success(cachedOrganisation.toOrganisation()))
-        }
-    }
-
-    private fun getOrganisationByIdFromServer(id: String): Flow<RequestResult<Organisation>> {
-        val apiRequest =
-            flow { emit(api.baseDtoByIdOrganisation(idOrganisation = id)) }
-                .onEach { result ->
-                    if (result.isSuccess) saveOrganisationDtoToCache(result.getOrThrow())
+    override fun getOrganisationById(orgId: String): Flow<RequestResult<Organisation>> {
+        val start = flowOf<RequestResult<Organisation>>(RequestResult.InProgress())
+        val organisationFlow =
+            database.ipSearcherDao.getOrganisationById(orgId).map { cachedOrganisation ->
+                if (cachedOrganisation == null) {
+                    val apiRequest = api.baseDtoByIdOrganisation(idOrganisation = orgId)
+                    if (apiRequest.isSuccess) {
+                        saveOrganisationDtoToCache(apiRequest.getOrThrow())
+                    }
+                    apiRequest
+                        .map {
+                            it.toOrganisation()!!
+                        }
+                        .toRequestResult()
+                } else {
+                    RequestResult.Success(cachedOrganisation.toOrganisation())
                 }
-                .map { it.toRequestResult() }
-        val start = flowOf<RequestResult<BaseDto>>(RequestResult.InProgress())
-        return merge(start, apiRequest)
-            .map { result ->
-                result.map { it.toOrganisation()!! }
             }
+
+        return merge(start, organisationFlow)
     }
 
     private suspend fun saveOrganisationDtoToCache(baseDto: BaseDto) {

@@ -6,5 +6,5 @@ import ru.kabirov.data.model.Organisation
 
 interface IpAddressRepository {
     fun getSubnetByIp(ipAddress: String): Flow<RequestResult<Subnet>>
-    suspend fun getOrganisationBySubnet(subnet: String): Flow<RequestResult<Organisation>>
+    fun getOrganisationById(orgId: String): Flow<RequestResult<Organisation>>
 }

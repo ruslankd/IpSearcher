@@ -4,11 +4,10 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.kapt)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlinSerialization)
 }
 
 android {
-    namespace = "ru.kabirov.iporganisationselector"
+    namespace = "ru.kabirov.organisation_info"
     compileSdk = 34
 
     defaultConfig {
@@ -37,7 +36,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.dagger.hilt)
     implementation(libs.dagger.hilt.navigation.compose)
     kapt(libs.dagger.hilt.compiler)
@@ -47,16 +45,11 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
 
-    implementation(libs.androidx.compose.navigation)
-    implementation(libs.kotlinx.serialization.json)
-
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
+    implementation(projects.core.data)
     implementation(projects.core.uikit)
-    implementation(projects.features.searcherByOrg)
-    implementation(projects.features.searcherByIp)
-    implementation(projects.features.organisationInfo)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
