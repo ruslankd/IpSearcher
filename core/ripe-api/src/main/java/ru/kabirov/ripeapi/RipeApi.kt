@@ -1,11 +1,13 @@
 package ru.kabirov.ripeapi
 
+import com.skydoves.retrofit.adapters.result.ResultCallAdapterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.kabirov.ripeapi.models.BaseDto
 
@@ -18,7 +20,7 @@ interface RipeApi {
         @Query("source") source: String = "ripe",
         @Query("query-string") idOrganisation: String,
         @Query("flags") flags: String = "no-referenced",
-    ): BaseDto
+    ): Result<BaseDto>
 
     @Headers("Accept: application/json")
     @GET("search")
@@ -27,7 +29,7 @@ interface RipeApi {
         @Query("source") source: String = "ripe",
         @Query("query-string") name: String,
         @Query("flags") flags: String = "no-referenced",
-    ): BaseDto
+    ): Result<BaseDto>
 
     @Headers("Accept: application/json")
     @GET("search")
@@ -36,7 +38,13 @@ interface RipeApi {
         @Query("source") source: String = "ripe",
         @Query("query-string") ipAddress: String,
         @Query("flags") flags: String = "no-referenced",
-    ): BaseDto
+    ): Result<BaseDto>
+
+    @Headers("Accept: application/json")
+    @GET("ripe/inetnum/{subnet}")
+    suspend fun baseDtoBySubnet(
+        @Path("inetnum") subnet: String
+    ): Result<BaseDto>
 }
 
 fun RipeApi(
@@ -55,5 +63,6 @@ private fun retrofit(
     return Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(jsonConverterFactory)
+        .addCallAdapterFactory(ResultCallAdapterFactory.create())
         .build()
 }

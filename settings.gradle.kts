@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google {
@@ -27,3 +29,4 @@ include(":features:searcher-by-org")
 include(":core:database")
 include(":features:ip-organisation-selector")
 include(":features:searcher-by-ip")
+include(":core:data")

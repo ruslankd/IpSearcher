@@ -3,11 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.kapt)
-    alias(libs.plugins.compose.compiler)
 }
 
 android {
-    namespace = "ru.kabirov.searcherbyip"
+    namespace = "ru.kabirov.data"
     compileSdk = 34
 
     defaultConfig {
@@ -37,19 +36,13 @@ android {
 
 dependencies {
     implementation(libs.dagger.hilt)
-    implementation(libs.dagger.hilt.navigation.compose)
     kapt(libs.dagger.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.javax.inject)
 
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-    implementation(projects.core.data)
-    implementation(projects.core.uikit)
+    implementation(projects.core.database)
+    implementation(projects.core.ripeApi)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

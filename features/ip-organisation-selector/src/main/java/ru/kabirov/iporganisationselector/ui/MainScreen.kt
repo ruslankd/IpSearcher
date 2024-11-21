@@ -19,7 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import ru.kabirov.iporganisationselector.model.MainViewModel
 import ru.kabirov.iporganisationselector.navigation.NavClass
-import ru.kabirov.searcherbyip.presentation.ui.InetnumScreen
+import ru.kabirov.searcherbyip.presentation.ui.SubnetScreen
 import ru.kabirov.serchermain.ui.IpAddressesScreen
 
 @Composable
@@ -32,20 +32,22 @@ fun MainScreen(
     val query by viewModel.query.collectAsStateWithLifecycle()
 
     LaunchedEffect(navigator) {
-        if (navigator is NavClass.IpAddresses) {
+        if (navigator is NavClass.Organisation) {
             navController.navigate(navigator) {
                 popUpTo(0)
             }
-        } else if (navigator is NavClass.Inetnum) {
+        } else if (navigator is NavClass.Subnet) {
             navController.navigate(navigator) {
                 popUpTo(0)
             }
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(8.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
         Searcher(
             modifier = Modifier.fillMaxWidth(),
             query = query,
@@ -54,14 +56,31 @@ fun MainScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         NavHost(navController = navController, startDestination = NavClass.Empty) {
+            val modifier: Modifier = Modifier.weight(1f)
             composable<NavClass.Empty> {
 
             }
-            composable<NavClass.IpAddresses> { backStackEntry ->
-                IpAddressesScreen(backStackEntry.toRoute<NavClass.IpAddresses>().query)
+            composable<NavClass.Organisation> { backStackEntry ->
+                IpAddressesScreen(
+                    modifier = modifier,
+                    query = backStackEntry.toRoute<NavClass.Organisation>().query
+                )
             }
-            composable<NavClass.Inetnum> { backStackEntry ->
-                InetnumScreen(backStackEntry.toRoute<NavClass.Inetnum>().ipAddress)
+            composable<NavClass.Subnet> { backStackEntry ->
+                SubnetScreen(
+                    ipAddress = backStackEntry.toRoute<NavClass.Subnet>().ipAddress,
+                    onSubnetClick = { orgId ->
+                        navController.navigate(
+                            NavClass.OrganisationInfo(
+                                orgId
+                            )
+                        )
+                    },
+                    modifier = modifier,
+                )
+            }
+            composable<NavClass.OrganisationInfo> { backStackEntry ->
+
             }
         }
     }

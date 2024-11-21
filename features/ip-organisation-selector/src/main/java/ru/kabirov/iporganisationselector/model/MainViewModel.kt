@@ -23,9 +23,9 @@ class MainViewModel @Inject constructor(
 
     fun onSearchClick() {
         if (ipAddressValidator.isValidIpAddress(_query.value)) {
-            _navigator.value = NavClass.Inetnum(_query.value.lowercase())
+            _navigator.value = NavClass.Subnet(_query.value.lowercase())
         } else {
-            _navigator.value = NavClass.IpAddresses(_query.value.lowercase())
+            _navigator.value = NavClass.Organisation(_query.value.lowercase())
         }
     }
 }

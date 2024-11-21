@@ -11,17 +11,15 @@ import ru.kabirov.ripeapi.RipeApi
 import javax.inject.Inject
 
 @HiltViewModel
-class SearcherViewModel @Inject internal constructor(
-    private val ripeApi: RipeApi
-) : ViewModel() {
+class SearcherViewModel @Inject internal constructor() : ViewModel() {
     var state by mutableStateOf<List<String>>(emptyList())
 
-    fun init(query: String) {
-        viewModelScope.launch {
-            state =
-                ripeApi.baseDtoByNameOrganisation(name = query).objects?.obj?.map {
-                    it.attributes?.attribute?.get(1)?.value ?: ""
-                } ?: emptyList()
-        }
-    }
+//    fun init(query: String) {
+//        viewModelScope.launch {
+//            state =
+//                ripeApi.baseDtoByNameOrganisation(name = query).objects?.obj?.map {
+//                    it.attributes?.attribute?.get(1)?.value ?: ""
+//                } ?: emptyList()
+//        }
+//    }
 }

@@ -13,17 +13,4 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    @Provides
-    @Singleton
-    fun provideRipeApi(): RipeApi {
-        return RipeApi(baseUrl = "https://rest.db.ripe.net/")
-    }
-
-    @Provides
-    @Singleton
-    fun provideIpSearcherDatabase(
-        @ApplicationContext context: Context
-    ): IpSearcherDatabase {
-        return IpSearcherDatabase(context)
-    }
 }

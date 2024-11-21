@@ -14,10 +14,11 @@ import ru.kabirov.serchermain.model.SearcherViewModel
 fun IpAddressesScreen(
     query: String,
     viewModel: SearcherViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier,
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.init(query)
-    }
+//    LaunchedEffect(Unit) {
+//        viewModel.init(query)
+//    }
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(viewModel.state) {

@@ -8,8 +8,11 @@ sealed class NavClass {
     data object Empty : NavClass()
 
     @Serializable
-    data class IpAddresses(val query: String) : NavClass()
+    data class Organisation(val query: String) : NavClass()
 
     @Serializable
-    data class Inetnum(val ipAddress: String) : NavClass()
+    data class Subnet(val ipAddress: String) : NavClass()
+
+    @Serializable
+    data class OrganisationInfo(val orgId: String) : NavClass()
 }

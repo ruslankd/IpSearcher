@@ -2,55 +2,29 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b61d825d6fcf5f864ba13971d49b7f43",
+    "identityHash": "7bfb27193b4792ebac27bc30a311ced1",
     "entities": [
       {
-        "tableName": "network",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ip` TEXT NOT NULL, `organisation_id` TEXT NOT NULL, PRIMARY KEY(`ip`))",
+        "tableName": "subnet",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`inet_num` TEXT NOT NULL, `net_name` TEXT NOT NULL, `organisation_id` TEXT, `country` TEXT, PRIMARY KEY(`inet_num`))",
         "fields": [
           {
-            "fieldPath": "ip",
-            "columnName": "ip",
+            "fieldPath": "subnet",
+            "columnName": "inet_num",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "organisationId",
-            "columnName": "organisation_id",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "ip"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "network_range",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`organisation_id` TEXT NOT NULL, `net_name` TEXT NOT NULL, `inet_num` TEXT NOT NULL, `country` TEXT, PRIMARY KEY(`organisation_id`, `inet_num`))",
-        "fields": [
-          {
-            "fieldPath": "organisationId",
-            "columnName": "organisation_id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "netName",
+            "fieldPath": "subnetName",
             "columnName": "net_name",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "inetNum",
-            "columnName": "inet_num",
+            "fieldPath": "organisationId",
+            "columnName": "organisation_id",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "country",
@@ -62,7 +36,6 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "organisation_id",
             "inet_num"
           ]
         },
@@ -105,7 +78,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b61d825d6fcf5f864ba13971d49b7f43')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7bfb27193b4792ebac27bc30a311ced1')"
     ]
   }
 }

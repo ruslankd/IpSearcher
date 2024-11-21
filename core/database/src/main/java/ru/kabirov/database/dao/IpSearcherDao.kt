@@ -1,18 +1,35 @@
 package ru.kabirov.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
-import ru.kabirov.database.models.NetworkRange
-import ru.kabirov.database.models.Organisation
+import kotlinx.coroutines.flow.Flow
+import ru.kabirov.database.models.SubnetDbo
+import ru.kabirov.database.models.OrganisationDbo
 
 @Dao
 interface IpSearcherDao {
-    @Query("SELECT * FROM network_range WHERE organisation_id = :id")
-    suspend fun getNetworksById(id: String): List<NetworkRange>
+    @Query("SELECT * FROM subnet WHERE organisation_id = :orgId")
+    suspend fun getSubnetsByOrgId(orgId: String): List<SubnetDbo>
 
     @Query("SELECT * FROM organisation WHERE name LIKE '%' || :query || '%'")
-    suspend fun getOrganisationsByQuery(query: String): List<Organisation>
+    suspend fun getOrganisationsByName(query: String): List<OrganisationDbo>
 
-    @Query("SELECT organisation_id FROM network WHERE ip = :ip")
-    suspend fun getOrganisationIdByIp(ip: String): String
+    @Query("SELECT organisation_id FROM subnet WHERE inet_num = :subnet")
+    suspend fun getOrganisationIdBySubnet(subnet: String): String
+
+    @Query("SELECT * FROM organisation WHERE id = :id")
+    suspend fun getOrganisationById(id: String): OrganisationDbo?
+
+    @Query("SELECT * FROM subnet")
+    suspend fun getAllSubnets(): List<SubnetDbo>
+
+    @Query("SELECT * FROM subnet")
+    fun getAllSubnetsFlow(): Flow<List<SubnetDbo>>
+
+    @Insert
+    suspend fun insertSubnet(subnet: SubnetDbo)
+
+    @Insert
+    suspend fun insertOrganisation(organisation: OrganisationDbo)
 }
