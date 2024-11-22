@@ -10,16 +10,16 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import ru.kabirov.data.api.OrganisationRepository
+import ru.kabirov.sercherbyorg.domain.GetOrganisationsUseCase
 
 @HiltViewModel(assistedFactory = OrganisationsViewModel.OrganisationsViewModelFactory::class)
 class OrganisationsViewModel @AssistedInject internal constructor(
-    organisationRepository: OrganisationRepository,
+    getOrganisationsUseCase: GetOrganisationsUseCase,
     @Assisted query: String,
 ) : ViewModel() {
 
-    var state: StateFlow<UiState> = organisationRepository
-        .getOrganisationsByName(query)
+    var state: StateFlow<UiState> = getOrganisationsUseCase
+        .invoke(query)
         .map {
             it.toUiState()
         }

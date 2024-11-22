@@ -10,15 +10,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import ru.kabirov.data.api.IpAddressRepository
+import ru.kabirov.searcherbyip.domain.GetSubnetUseCase
 
 @HiltViewModel(assistedFactory = SubnetViewModel.SubnetViewModelFactory::class)
 class SubnetViewModel @AssistedInject constructor(
-    ipAddressRepository: IpAddressRepository,
+    getSubnetUseCase: GetSubnetUseCase,
     @Assisted ipAddress: String,
 ) : ViewModel() {
-    var state: StateFlow<UiState> = ipAddressRepository
-        .getSubnetByIp(ipAddress)
+    var state: StateFlow<UiState> = getSubnetUseCase
+        .invoke(ipAddress)
         .map {
             it.toUiState()
         }

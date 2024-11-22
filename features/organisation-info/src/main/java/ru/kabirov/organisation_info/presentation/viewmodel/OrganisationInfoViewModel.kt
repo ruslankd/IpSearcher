@@ -7,49 +7,31 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import ru.kabirov.data.api.IpAddressRepository
-import ru.kabirov.data.api.OrganisationRepository
+import ru.kabirov.data.model.Organisation
 import ru.kabirov.data.model.RequestResult
+import ru.kabirov.organisation_info.domain.GetOrganisationUseCase
+import ru.kabirov.organisation_info.domain.GetSubnetsUseCase
 
 @HiltViewModel(assistedFactory = OrganisationInfoViewModel.OrganisationInfoViewModelFactory::class)
 class OrganisationInfoViewModel @AssistedInject constructor(
-    ipAddressRepository: IpAddressRepository,
-    organisationRepository: OrganisationRepository,
+    getOrganisationUseCase: GetOrganisationUseCase,
+    private val getSubnetsUseCase: GetSubnetsUseCase,
     @Assisted orgId: String,
 ) : ViewModel() {
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state: StateFlow<UiState> = ipAddressRepository
-        .getOrganisationById(orgId)
+    var state: StateFlow<UiState> = getOrganisationUseCase.invoke(orgId)
         .flatMapConcat { organisationResult ->
             when (organisationResult) {
                 is RequestResult.Success -> {
-                    organisationRepository.getSubnetsByOrgId(organisationResult.data.id)
-                        .map { subnetsResult ->
-                            when (subnetsResult) {
-                                is RequestResult.Success -> {
-                                    RequestResult.Success(
-                                        StateData(
-                                            organisationResult.data,
-                                            subnetsResult.data
-                                        )
-                                    ).toUiState()
-                                }
-
-                                is RequestResult.Error -> {
-                                    RequestResult.Error<StateData>(subnetsResult.error).toUiState()
-                                }
-
-                                is RequestResult.InProgress -> {
-                                    RequestResult.InProgress<StateData>().toUiState()
-                                }
-                            }
-                        }
+                    getStateData(organisationResult.data).map { it.toUiState() }
                 }
 
                 is RequestResult.Error -> {
@@ -62,6 +44,33 @@ class OrganisationInfoViewModel @AssistedInject constructor(
             }
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, UiState.None)
+
+
+    private fun getStateData(
+        org: Organisation
+    ): Flow<RequestResult<StateData>> {
+        return getSubnetsUseCase.invoke(org.id)
+            .map { subnetsResult ->
+                when (subnetsResult) {
+                    is RequestResult.Success -> {
+                        RequestResult.Success(
+                            StateData(
+                                org,
+                                subnetsResult.data
+                            )
+                        )
+                    }
+
+                    is RequestResult.Error -> {
+                        RequestResult.Error(subnetsResult.error)
+                    }
+
+                    is RequestResult.InProgress -> {
+                        RequestResult.InProgress()
+                    }
+                }
+            }
+    }
 
     @AssistedFactory
     interface OrganisationInfoViewModelFactory {
