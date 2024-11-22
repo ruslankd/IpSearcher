@@ -51,8 +51,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    implementation(project(":core:ripe-api"))
-    implementation(project(":core:uikit"))
+    implementation(projects.core.data)
+    implementation(projects.core.uikit)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

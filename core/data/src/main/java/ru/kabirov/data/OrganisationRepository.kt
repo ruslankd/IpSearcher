@@ -5,6 +5,6 @@ import ru.kabirov.data.model.Subnet
 import ru.kabirov.data.model.Organisation
 
 interface OrganisationRepository {
-    suspend fun getOrganisationsByName(name: String): Flow<RequestResult<List<Organisation>>>
-    suspend fun getSubnetsByOrgId(orgId: String): Flow<RequestResult<List<Subnet>>>
+    fun getOrganisationsByName(name: String): Flow<RequestResult<List<Organisation>>>
+    fun getSubnetsByOrgId(orgId: String): Flow<RequestResult<List<Subnet>>>
 }

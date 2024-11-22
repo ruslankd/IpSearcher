@@ -1,20 +1,15 @@
-package ru.kabirov
+package ru.kabirov.data
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import ru.kabirov.data.IpAddressRepository
-import ru.kabirov.data.RequestResult
 import ru.kabirov.data.mapper.toOrganisation
 import ru.kabirov.data.mapper.toOrganisationDbo
 import ru.kabirov.data.mapper.toSubnet
 import ru.kabirov.data.mapper.toSubnetDbo
 import ru.kabirov.data.model.Organisation
 import ru.kabirov.data.model.Subnet
-import ru.kabirov.data.toRequestResult
 import ru.kabirov.database.IpSearcherDatabase
 import ru.kabirov.database.models.SubnetDbo
 import ru.kabirov.ripeapi.RipeApi
@@ -74,7 +69,7 @@ class IpAddressRepositoryImpl @Inject constructor(
     override fun getOrganisationById(orgId: String): Flow<RequestResult<Organisation>> {
         val start = flowOf<RequestResult<Organisation>>(RequestResult.InProgress())
         val organisationFlow =
-            database.ipSearcherDao.getOrganisationById(orgId).map { cachedOrganisation ->
+            database.ipSearcherDao.getOrganisationByIdFlow(orgId).map { cachedOrganisation ->
                 if (cachedOrganisation == null) {
                     val apiRequest = api.baseDtoByIdOrganisation(idOrganisation = orgId)
                     if (apiRequest.isSuccess) {

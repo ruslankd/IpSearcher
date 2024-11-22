@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7bfb27193b4792ebac27bc30a311ced1",
+    "identityHash": "f3ebb06929dcf084db59907f8c8f3aae",
     "entities": [
       {
         "tableName": "subnet",
@@ -73,12 +73,65 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "organisation_name_query",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`org_id` TEXT NOT NULL, `name_query` TEXT NOT NULL, PRIMARY KEY(`org_id`, `name_query`))",
+        "fields": [
+          {
+            "fieldPath": "orgId",
+            "columnName": "org_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nameQuery",
+            "columnName": "name_query",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "org_id",
+            "name_query"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "check_org",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`org_id` TEXT NOT NULL, `has_all_subnets` INTEGER NOT NULL, PRIMARY KEY(`org_id`))",
+        "fields": [
+          {
+            "fieldPath": "orgId",
+            "columnName": "org_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasAllSubnets",
+            "columnName": "has_all_subnets",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "org_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7bfb27193b4792ebac27bc30a311ced1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f3ebb06929dcf084db59907f8c8f3aae')"
     ]
   }
 }

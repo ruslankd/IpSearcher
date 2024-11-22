@@ -5,8 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.kabirov.database.dao.IpSearcherDao
+import ru.kabirov.database.models.CheckAllSubnetForOrganisation
 import ru.kabirov.database.models.SubnetDbo
 import ru.kabirov.database.models.OrganisationDbo
+import ru.kabirov.database.models.OrganisationNameQuery
 
 class IpSearcherDatabase internal constructor(private val database: IpSearcherRoomDatabase) {
     val ipSearcherDao: IpSearcherDao
@@ -14,7 +16,12 @@ class IpSearcherDatabase internal constructor(private val database: IpSearcherRo
 }
 
 @Database(
-    entities = [SubnetDbo::class, OrganisationDbo::class],
+    entities = [
+        SubnetDbo::class,
+        OrganisationDbo::class,
+        OrganisationNameQuery::class,
+        CheckAllSubnetForOrganisation::class,
+    ],
     version = 1,
     exportSchema = true,
 )

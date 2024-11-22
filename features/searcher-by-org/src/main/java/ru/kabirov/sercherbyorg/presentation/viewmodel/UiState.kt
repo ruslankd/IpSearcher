@@ -1,8 +1,7 @@
-package ru.kabirov.organisation_info.presentation.viewmodel
+package ru.kabirov.sercherbyorg.presentation.viewmodel
 
 import ru.kabirov.data.RequestResult
 import ru.kabirov.data.model.Organisation
-import ru.kabirov.data.model.Subnet
 
 sealed class UiState {
     data object None : UiState()
@@ -11,10 +10,10 @@ sealed class UiState {
 
     class Error(val error: Throwable) : UiState()
 
-    class Success(val stateData: StateData) : UiState()
+    class Success(val organisations: List<Organisation>) : UiState()
 }
 
-internal fun RequestResult<StateData>.toUiState(): UiState {
+internal fun RequestResult<List<Organisation>>.toUiState(): UiState {
     return when (this) {
         is RequestResult.Error -> UiState.Error(error)
         is RequestResult.InProgress -> UiState.Loading

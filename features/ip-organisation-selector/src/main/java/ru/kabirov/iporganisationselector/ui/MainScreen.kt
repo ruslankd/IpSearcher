@@ -21,7 +21,7 @@ import ru.kabirov.iporganisationselector.model.MainViewModel
 import ru.kabirov.iporganisationselector.navigation.NavClass
 import ru.kabirov.organisation_info.presentation.ui.OrganisationInfoScreen
 import ru.kabirov.searcherbyip.presentation.ui.SubnetScreen
-import ru.kabirov.serchermain.ui.IpAddressesScreen
+import ru.kabirov.sercherbyorg.presentation.ui.OrganisationsScreen
 
 @Composable
 fun MainScreen(
@@ -62,9 +62,16 @@ fun MainScreen(
 
             }
             composable<NavClass.Organisation> { backStackEntry ->
-                IpAddressesScreen(
+                OrganisationsScreen(
+                    query = backStackEntry.toRoute<NavClass.Organisation>().query,
+                    onOrganisationClick = { orgId ->
+                        navController.navigate(
+                            NavClass.OrganisationInfo(
+                                orgId
+                            )
+                        )
+                    },
                     modifier = modifier,
-                    query = backStackEntry.toRoute<NavClass.Organisation>().query
                 )
             }
             composable<NavClass.Subnet> { backStackEntry ->

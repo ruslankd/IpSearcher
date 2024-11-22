@@ -1,4 +1,4 @@
-package ru.kabirov.serchermain
+package ru.kabirov.sercherbyorg
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

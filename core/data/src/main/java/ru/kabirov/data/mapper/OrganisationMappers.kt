@@ -3,6 +3,7 @@ package ru.kabirov.data.mapper
 import ru.kabirov.data.model.Organisation
 import ru.kabirov.database.models.OrganisationDbo
 import ru.kabirov.ripeapi.models.BaseDto
+import ru.kabirov.ripeapi.models.Object
 
 internal fun OrganisationDbo.toOrganisation(): Organisation {
     return Organisation(
@@ -36,4 +37,36 @@ internal fun BaseDto.toOrganisation(): Organisation? {
         name = name,
         country = country,
     )
+}
+
+internal fun BaseDto.toOrganisationList(): List<Organisation> {
+    val objects = objects?.obj ?: emptyList()
+    return objects.map { obj ->
+        val attributes = obj.attributes?.attribute
+        if (attributes.isNullOrEmpty()) return emptyList()
+        val id = attributes.find { it.name == "organisation" }?.value ?: return emptyList()
+        val name = attributes.findLast { it.name == "org-name" }?.value ?: return emptyList()
+        val country = attributes.find { it.name == "country" }?.value
+        Organisation(
+            id = id,
+            name = name,
+            country = country,
+        )
+    }
+}
+
+internal fun BaseDto.toOrganisationDboList(): List<OrganisationDbo> {
+    val objects = objects?.obj ?: emptyList()
+    return objects.map { obj ->
+        val attributes = obj.attributes?.attribute
+        if (attributes.isNullOrEmpty()) return emptyList()
+        val id = attributes.find { it.name == "organisation" }?.value ?: return emptyList()
+        val name = attributes.findLast { it.name == "org-name" }?.value ?: return emptyList()
+        val country = attributes.find { it.name == "country" }?.value
+        OrganisationDbo(
+            id = id,
+            name = name,
+            country = country,
+        )
+    }
 }

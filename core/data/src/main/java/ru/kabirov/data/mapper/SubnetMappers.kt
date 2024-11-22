@@ -1,6 +1,7 @@
 package ru.kabirov.data.mapper
 
 import ru.kabirov.data.model.Subnet
+import ru.kabirov.database.models.OrganisationDbo
 import ru.kabirov.database.models.SubnetDbo
 import ru.kabirov.ripeapi.models.BaseDto
 
@@ -41,4 +42,40 @@ internal fun BaseDto.toSubnet(): Subnet? {
         subnet = subnet,
         country = country,
     )
+}
+
+internal fun BaseDto.toSubnetDboList(): List<SubnetDbo> {
+    val objects = objects?.obj ?: emptyList()
+    return objects.map { obj ->
+        val attributes = obj.attributes?.attribute
+        if (attributes.isNullOrEmpty()) return emptyList()
+        val subnet = attributes.find { it.name == "inetnum" }?.value ?: return emptyList()
+        val subnetName = attributes.findLast { it.name == "netname" }?.value ?: return emptyList()
+        val orgId = attributes.findLast { it.name == "org" }?.value ?: return emptyList()
+        val country = attributes.find { it.name == "country" }?.value
+        SubnetDbo(
+            subnet = subnet,
+            subnetName = subnetName,
+            organisationId = orgId,
+            country = country,
+        )
+    }
+}
+
+internal fun BaseDto.toSubnetList(): List<Subnet> {
+    val objects = objects?.obj ?: emptyList()
+    return objects.map { obj ->
+        val attributes = obj.attributes?.attribute
+        if (attributes.isNullOrEmpty()) return emptyList()
+        val subnet = attributes.find { it.name == "inetnum" }?.value ?: return emptyList()
+        val subnetName = attributes.findLast { it.name == "netname" }?.value ?: return emptyList()
+        val orgId = attributes.findLast { it.name == "org" }?.value ?: return emptyList()
+        val country = attributes.find { it.name == "country" }?.value
+        Subnet(
+            subnet = subnet,
+            subnetName = subnetName,
+            orgId = orgId,
+            country = country,
+        )
+    }
 }

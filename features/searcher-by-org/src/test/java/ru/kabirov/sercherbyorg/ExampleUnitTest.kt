@@ -1,4 +1,4 @@
-package ru.kabirov.serchermain
+package ru.kabirov.sercherbyorg
 
 import org.junit.Test
 

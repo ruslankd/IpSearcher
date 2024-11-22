@@ -1,7 +1,8 @@
-package ru.kabirov.organisation_info.presentation.ui
+package ru.kabirov.sercherbyorg.presentation.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,33 +23,39 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.kabirov.data.model.Organisation
-import ru.kabirov.organisation_info.presentation.viewmodel.OrganisationInfoViewModel
-import ru.kabirov.organisation_info.presentation.viewmodel.UiState
+import ru.kabirov.sercherbyorg.presentation.viewmodel.OrganisationsViewModel
+import ru.kabirov.sercherbyorg.presentation.viewmodel.UiState
 
 @Composable
-fun OrganisationInfoScreen(
-    orgId: String,
-    viewModel: OrganisationInfoViewModel = hiltViewModel(
-        creationCallback = { factory: OrganisationInfoViewModel.OrganisationInfoViewModelFactory ->
-            factory.create(orgId)
+fun OrganisationsScreen(
+    query: String,
+    viewModel: OrganisationsViewModel = hiltViewModel(
+        creationCallback = { factory: OrganisationsViewModel.OrganisationsViewModelFactory ->
+            factory.create(query)
         }
     ),
+    onOrganisationClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    OrganisationInfoContent(modifier = modifier, state = state)
+    OrganisationsContent(
+        modifier = modifier,
+        state = state,
+        onOrganisationClick = onOrganisationClick
+    )
 }
 
 @Composable
-fun OrganisationInfoContent(
+fun OrganisationsContent(
     state: UiState,
+    onOrganisationClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         when (state) {
             is UiState.None -> Unit
-            is UiState.Success -> OrganisationInfo(state, modifier)
+            is UiState.Success -> Organisations(state, onOrganisationClick, modifier)
             is UiState.Error -> ErrorMessage(state, modifier)
             is UiState.Loading -> ProgressIndicator(modifier)
         }
@@ -56,35 +63,45 @@ fun OrganisationInfoContent(
 }
 
 @Composable
-fun OrganisationInfo(
+fun Organisations(
     state: UiState.Success,
+    onSubnetClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val organisation = state.stateData.organisation
-    val subnets = state.stateData.subnets
+    val organisations = state.organisations
 
     Box(modifier = modifier) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            OrganisationTitle(organisation)
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(items = subnets, key = {
-                    it.subnet
-                }) {
-                    Text(text = it.subnet)
-                }
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(items = organisations, key = {
+                it.id
+            }) {
+                OrganisationItem(org = it, onSubnetClick = onSubnetClick)
             }
         }
     }
 }
 
 @Composable
-private fun OrganisationTitle(organisation: Organisation) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Text(text = organisation.name)
+private fun OrganisationItem(
+    org: Organisation,
+    onSubnetClick: (String) -> Unit,
+) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable {
+            onSubnetClick(org.id)
+        }) {
+        Column {
+            Text(text = org.name)
+            Text(text = org.id)
+        }
         Spacer(modifier = Modifier.weight(1f))
-        organisation.country?.let {
-            Text(text = it)
+        org.country?.let { country ->
+            Text(text = country)
         }
     }
 }
