@@ -57,8 +57,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(project(":core:uikit"))
-    implementation(project(":core:ripe-api"))
-    implementation(project(":core:database"))
-    implementation(project(":features:ip-organisation-selector"))
+    implementation(projects.core.uikit)
+    implementation(projects.features.ipOrganisationSelector)
 }

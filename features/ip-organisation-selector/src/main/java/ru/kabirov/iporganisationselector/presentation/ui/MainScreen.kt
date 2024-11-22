@@ -1,4 +1,4 @@
-package ru.kabirov.iporganisationselector.ui
+package ru.kabirov.iporganisationselector.presentation.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import ru.kabirov.iporganisationselector.model.MainViewModel
+import ru.kabirov.iporganisationselector.presentation.viewmodel.MainViewModel
 import ru.kabirov.iporganisationselector.navigation.NavClass
 import ru.kabirov.organisation_info.presentation.ui.OrganisationInfoScreen
 import ru.kabirov.searcherbyip.presentation.ui.SubnetScreen

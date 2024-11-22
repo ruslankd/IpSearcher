@@ -1,7 +1,6 @@
 package ru.kabirov.data.mapper
 
 import ru.kabirov.data.model.Subnet
-import ru.kabirov.database.models.OrganisationDbo
 import ru.kabirov.database.models.SubnetDbo
 import ru.kabirov.ripeapi.models.BaseDto
 

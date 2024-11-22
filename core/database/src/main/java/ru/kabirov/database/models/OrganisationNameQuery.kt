@@ -2,7 +2,6 @@ package ru.kabirov.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "organisation_name_query",

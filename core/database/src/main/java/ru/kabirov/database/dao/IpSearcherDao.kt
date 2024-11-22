@@ -6,9 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import ru.kabirov.database.models.CheckAllSubnetForOrganisation
-import ru.kabirov.database.models.SubnetDbo
 import ru.kabirov.database.models.OrganisationDbo
 import ru.kabirov.database.models.OrganisationNameQuery
+import ru.kabirov.database.models.SubnetDbo
 
 @Dao
 interface IpSearcherDao {
@@ -18,20 +18,11 @@ interface IpSearcherDao {
     @Query("SELECT * FROM subnet WHERE organisation_id = :orgId")
     suspend fun getSubnetsByOrgId(orgId: String): List<SubnetDbo>
 
-    @Query("SELECT * FROM organisation WHERE name LIKE '%' || :query || '%'")
-    suspend fun getOrganisationsByName(query: String): List<OrganisationDbo>
-
-    @Query("SELECT organisation_id FROM subnet WHERE inet_num = :subnet")
-    fun getOrganisationIdBySubnet(subnet: String): Flow<String>
-
     @Query("SELECT * FROM organisation WHERE id = :id")
     fun getOrganisationByIdFlow(id: String): Flow<OrganisationDbo?>
 
     @Query("SELECT * FROM organisation WHERE id = :id")
     suspend fun getOrganisationById(id: String): OrganisationDbo
-
-    @Query("SELECT * FROM subnet")
-    suspend fun getAllSubnets(): List<SubnetDbo>
 
     @Query("SELECT * FROM subnet")
     fun getAllSubnetsFlow(): Flow<List<SubnetDbo>>

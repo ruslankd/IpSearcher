@@ -1,4 +1,4 @@
-package ru.kabirov.iporganisationselector.model
+package ru.kabirov.iporganisationselector.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -1,6 +1,6 @@
 package ru.kabirov.sercherbyorg.presentation.viewmodel
 
-import ru.kabirov.data.RequestResult
+import ru.kabirov.data.model.RequestResult
 import ru.kabirov.data.model.Organisation
 
 sealed class UiState {

@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.kabirov.iporganisationselector.model.IpAddressValidator
+import ru.kabirov.iporganisationselector.presentation.viewmodel.IpAddressValidator
 
 @Module
 @InstallIn(SingletonComponent::class)

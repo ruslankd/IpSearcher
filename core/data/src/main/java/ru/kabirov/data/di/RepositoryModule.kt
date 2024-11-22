@@ -4,10 +4,10 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.kabirov.data.IpAddressRepositoryImpl
-import ru.kabirov.data.IpAddressRepository
-import ru.kabirov.data.OrganisationRepository
-import ru.kabirov.data.OrganisationRepositoryImpl
+import ru.kabirov.data.impl.IpAddressRepositoryImpl
+import ru.kabirov.data.api.IpAddressRepository
+import ru.kabirov.data.api.OrganisationRepository
+import ru.kabirov.data.impl.OrganisationRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)

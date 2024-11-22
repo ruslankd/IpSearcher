@@ -1,8 +1,6 @@
 package ru.kabirov.organisation_info.presentation.viewmodel
 
-import ru.kabirov.data.RequestResult
-import ru.kabirov.data.model.Organisation
-import ru.kabirov.data.model.Subnet
+import ru.kabirov.data.model.RequestResult
 
 sealed class UiState {
     data object None : UiState()

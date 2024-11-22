@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import ru.kabirov.data.IpAddressRepository
-import ru.kabirov.data.OrganisationRepository
-import ru.kabirov.data.RequestResult
+import ru.kabirov.data.api.IpAddressRepository
+import ru.kabirov.data.api.OrganisationRepository
+import ru.kabirov.data.model.RequestResult
 
 @HiltViewModel(assistedFactory = OrganisationInfoViewModel.OrganisationInfoViewModelFactory::class)
 class OrganisationInfoViewModel @AssistedInject constructor(

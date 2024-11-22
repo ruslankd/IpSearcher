@@ -39,12 +39,6 @@ interface RipeApi {
         @Query("query-string") ipAddress: String,
         @Query("flags") flags: String = "no-referenced",
     ): Result<BaseDto>
-
-    @Headers("Accept: application/json")
-    @GET("ripe/inetnum/{subnet}")
-    suspend fun baseDtoBySubnet(
-        @Path("inetnum") subnet: String
-    ): Result<BaseDto>
 }
 
 fun RipeApi(

@@ -1,4 +1,4 @@
-package ru.kabirov.iporganisationselector.ui
+package ru.kabirov.iporganisationselector.presentation.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons

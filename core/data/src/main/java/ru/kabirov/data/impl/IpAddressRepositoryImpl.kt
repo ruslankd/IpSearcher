@@ -1,15 +1,18 @@
-package ru.kabirov.data
+package ru.kabirov.data.impl
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import ru.kabirov.data.api.IpAddressRepository
 import ru.kabirov.data.mapper.toOrganisation
 import ru.kabirov.data.mapper.toOrganisationDbo
 import ru.kabirov.data.mapper.toSubnet
 import ru.kabirov.data.mapper.toSubnetDbo
 import ru.kabirov.data.model.Organisation
+import ru.kabirov.data.model.RequestResult
 import ru.kabirov.data.model.Subnet
+import ru.kabirov.data.model.toRequestResult
 import ru.kabirov.database.IpSearcherDatabase
 import ru.kabirov.database.models.SubnetDbo
 import ru.kabirov.ripeapi.RipeApi

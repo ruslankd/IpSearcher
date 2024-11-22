@@ -3,7 +3,6 @@ package ru.kabirov.data.mapper
 import ru.kabirov.data.model.Organisation
 import ru.kabirov.database.models.OrganisationDbo
 import ru.kabirov.ripeapi.models.BaseDto
-import ru.kabirov.ripeapi.models.Object
 
 internal fun OrganisationDbo.toOrganisation(): Organisation {
     return Organisation(
