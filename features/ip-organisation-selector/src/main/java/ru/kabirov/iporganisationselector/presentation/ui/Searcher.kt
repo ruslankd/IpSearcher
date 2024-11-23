@@ -1,6 +1,8 @@
 package ru.kabirov.iporganisationselector.presentation.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
@@ -12,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import ru.kabirov.iporganisationselector.R
 
 @Composable
@@ -45,9 +48,13 @@ fun Searcher(
                 )
             }
         } else null,
-        singleLine = true,
         label = {
             Text(text = "Name or IP address of the organization")
         },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = {
+            onSearchClick()
+        }),
     )
 }

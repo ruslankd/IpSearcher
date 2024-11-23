@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,6 +35,7 @@ fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
+    val focusManager = LocalFocusManager.current
 
     val navigator by viewModel.navigator.collectAsStateWithLifecycle()
     val query by viewModel.query.collectAsStateWithLifecycle()
@@ -65,10 +67,14 @@ fun MainScreen(
             modifier = Modifier.fillMaxWidth(),
             query = query,
             onQueryChange = viewModel::onQueryChange,
-            onSearchClick = viewModel::onSearchClick,
+            onSearchClick = {
+                viewModel.onSearchClick()
+                focusManager.clearFocus()
+            },
             hasBackBtn = currentDestination?.hierarchy?.any { it.hasRoute(NavClass.OrganisationInfo::class) } == true,
             onBackBtnClick = {
                 navController.popBackStack()
+                focusManager.clearFocus()
             }
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -86,6 +92,7 @@ fun MainScreen(
                                 orgId
                             )
                         )
+                        focusManager.clearFocus()
                     },
                     modifier = modifier,
                 )
@@ -99,6 +106,7 @@ fun MainScreen(
                                 orgId
                             )
                         )
+                        focusManager.clearFocus()
                     },
                     modifier = modifier,
                 )
