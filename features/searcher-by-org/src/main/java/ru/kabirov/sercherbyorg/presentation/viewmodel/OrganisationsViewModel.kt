@@ -8,6 +8,7 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import ru.kabirov.sercherbyorg.domain.GetOrganisationsUseCase
@@ -20,6 +21,7 @@ class OrganisationsViewModel @AssistedInject internal constructor(
 
     var state: StateFlow<UiState> = getOrganisationsUseCase
         .invoke(query)
+        .distinctUntilChanged()
         .map {
             it.toUiState()
         }

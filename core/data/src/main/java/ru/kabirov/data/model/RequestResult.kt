@@ -1,7 +1,16 @@
 package ru.kabirov.data.model
 
 sealed class RequestResult<out T : Any> {
-    class InProgress<T : Any> : RequestResult<T>()
+    class InProgress<T : Any> : RequestResult<T>() {
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+    }
     class Error<T : Any>(val error: Throwable) : RequestResult<T>()
     class Success<T : Any>(val data: T) : RequestResult<T>()
 }

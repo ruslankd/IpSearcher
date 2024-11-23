@@ -31,12 +31,10 @@ class IpAddressRepositoryImpl @Inject constructor(
                 val apiRequest = api.baseDtoByIp(ipAddress = ipAddress)
                 if (apiRequest.isSuccess) {
                     saveSubnetDtoToCache(apiRequest.getOrThrow())
+                    RequestResult.InProgress()
+                } else {
+                    RequestResult.Error(apiRequest.exceptionOrNull() ?: Throwable())
                 }
-                apiRequest
-                    .map {
-                        it.toSubnet()!!
-                    }
-                    .toRequestResult()
             } else {
                 RequestResult.Success(cachedSubnet.toSubnet())
             }
@@ -77,12 +75,10 @@ class IpAddressRepositoryImpl @Inject constructor(
                     val apiRequest = api.baseDtoByIdOrganisation(idOrganisation = orgId)
                     if (apiRequest.isSuccess) {
                         saveOrganisationDtoToCache(apiRequest.getOrThrow())
+                        RequestResult.InProgress()
+                    } else {
+                        RequestResult.Error(apiRequest.exceptionOrNull() ?: Throwable())
                     }
-                    apiRequest
-                        .map {
-                            it.toOrganisation()!!
-                        }
-                        .toRequestResult()
                 } else {
                     RequestResult.Success(cachedOrganisation.toOrganisation())
                 }

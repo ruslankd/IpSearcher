@@ -34,10 +34,10 @@ class OrganisationRepositoryImpl @Inject constructor(
                     val apiRequest = api.baseDtoByNameOrganisation(name = name)
                     if (apiRequest.isSuccess) {
                         saveOrganisationsDtoToCache(apiRequest.getOrThrow(), name)
+                        RequestResult.InProgress()
+                    } else {
+                        RequestResult.Error(apiRequest.exceptionOrNull() ?: Throwable())
                     }
-                    apiRequest
-                        .map { it.toOrganisationList() }
-                        .toRequestResult()
                 } else {
                     RequestResult.Success(
                         orgIds.map { orgId ->
@@ -53,14 +53,14 @@ class OrganisationRepositoryImpl @Inject constructor(
     private suspend fun saveOrganisationsDtoToCache(baseDto: BaseDto, name: String) {
         baseDto.toOrganisationDboList().let { orgs ->
             database.ipSearcherDao.insertOrganisations(orgs)
-            orgs.forEach {
-                database.ipSearcherDao.insertQuery(
+            database.ipSearcherDao.insertQueries(
+                orgs.map {
                     OrganisationNameQuery(
                         nameQuery = name,
                         orgId = it.id,
                     )
-                )
-            }
+                }.toList()
+            )
         }
     }
 
@@ -76,10 +76,10 @@ class OrganisationRepositoryImpl @Inject constructor(
                     val apiRequest = api.baseDtoByIdOrganisation(idOrganisation = orgId)
                     if (apiRequest.isSuccess) {
                         saveSubnetsDtoToCache(apiRequest.getOrThrow(), orgId)
+                        RequestResult.InProgress()
+                    } else {
+                        RequestResult.Error(apiRequest.exceptionOrNull() ?: Throwable())
                     }
-                    apiRequest
-                        .map { it.toSubnetList() }
-                        .toRequestResult()
                 }
             }
         return merge(start, subnetsFlow)

@@ -43,7 +43,7 @@ interface IpSearcherDao {
     suspend fun insertOrganisations(organisations: List<OrganisationDbo>)
 
     @Insert
-    suspend fun insertQuery(organisationNameQuery: OrganisationNameQuery)
+    suspend fun insertQueries(organisationNameQueries: List<OrganisationNameQuery>)
 
     @Insert
     suspend fun insertHasAllSubnet(checkAllSubnetForOrganisation: CheckAllSubnetForOrganisation)

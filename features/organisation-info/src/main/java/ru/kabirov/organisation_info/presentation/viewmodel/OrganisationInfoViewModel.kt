@@ -10,6 +10,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -28,6 +29,7 @@ class OrganisationInfoViewModel @AssistedInject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var state: StateFlow<UiState> = getOrganisationUseCase.invoke(orgId)
+        .distinctUntilChanged()
         .flatMapConcat { organisationResult ->
             when (organisationResult) {
                 is RequestResult.Success -> {
@@ -50,6 +52,7 @@ class OrganisationInfoViewModel @AssistedInject constructor(
         org: Organisation
     ): Flow<RequestResult<StateData>> {
         return getSubnetsUseCase.invoke(org.id)
+            .distinctUntilChanged()
             .map { subnetsResult ->
                 when (subnetsResult) {
                     is RequestResult.Success -> {
