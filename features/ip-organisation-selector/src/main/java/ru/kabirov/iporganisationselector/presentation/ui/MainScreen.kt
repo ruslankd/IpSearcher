@@ -1,5 +1,6 @@
 package ru.kabirov.iporganisationselector.presentation.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,12 +10,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import ru.kabirov.iporganisationselector.presentation.viewmodel.MainViewModel
@@ -23,6 +28,7 @@ import ru.kabirov.organisation_info.presentation.ui.OrganisationInfoScreen
 import ru.kabirov.searcherbyip.presentation.ui.SubnetScreen
 import ru.kabirov.sercherbyorg.presentation.ui.OrganisationsScreen
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
@@ -35,11 +41,15 @@ fun MainScreen(
     LaunchedEffect(navigator) {
         if (navigator is NavClass.Organisation) {
             navController.navigate(navigator) {
-                popUpTo(0)
+                popUpTo(0) {
+                    inclusive = true
+                }
             }
         } else if (navigator is NavClass.Subnet) {
             navController.navigate(navigator) {
-                popUpTo(0)
+                popUpTo(0) {
+                    inclusive = true
+                }
             }
         }
     }
@@ -49,11 +59,17 @@ fun MainScreen(
             .fillMaxSize()
             .padding(8.dp)
     ) {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination
         Searcher(
             modifier = Modifier.fillMaxWidth(),
             query = query,
             onQueryChange = viewModel::onQueryChange,
             onSearchClick = viewModel::onSearchClick,
+            hasBackBtn = currentDestination?.hierarchy?.any { it.hasRoute(NavClass.OrganisationInfo::class) } == true,
+            onBackBtnClick = {
+                navController.popBackStack()
+            }
         )
         Spacer(modifier = Modifier.height(8.dp))
         NavHost(navController = navController, startDestination = NavClass.Empty) {
