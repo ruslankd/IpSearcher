@@ -4,6 +4,8 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
@@ -16,9 +18,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.ImageLoader
 import ru.kabirov.searcherbyip.R
-import ru.kabirov.searcherbyip.presentation.viewmodel.UiState
 import ru.kabirov.searcherbyip.presentation.viewmodel.SubnetViewModel
+import ru.kabirov.searcherbyip.presentation.viewmodel.UiState
+import ru.kabirov.uikit.CountryImage
 
 @Composable
 fun SubnetScreen(
@@ -33,7 +37,12 @@ fun SubnetScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    SubnetContent(modifier = modifier, state = state, onSubnetClick = onSubnetClick)
+    SubnetContent(
+        modifier = modifier,
+        state = state,
+        onSubnetClick = onSubnetClick,
+        imageLoader = viewModel.imageLoader,
+    )
 
 }
 
@@ -41,12 +50,13 @@ fun SubnetScreen(
 fun SubnetContent(
     state: UiState,
     onSubnetClick: (String) -> Unit,
+    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         when (state) {
             is UiState.None -> Unit
-            is UiState.Success -> SubnetInfo(state, onSubnetClick, modifier)
+            is UiState.Success -> SubnetInfo(state, onSubnetClick, imageLoader, modifier)
             is UiState.Error -> ErrorMessage(state, modifier)
             is UiState.Loading -> ProgressIndicator(modifier)
         }
@@ -57,13 +67,15 @@ fun SubnetContent(
 fun SubnetInfo(
     state: UiState.Success,
     onSubnetClick: (String) -> Unit,
+    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val subnet = state.subnet
+    val subnet = state.stateData.subnet
+    val flagUri = state.stateData.flagUri
 
     Box(modifier = modifier) {
-        Column(modifier = Modifier
+        Row(modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 if (subnet.orgId == null) {
@@ -78,8 +90,17 @@ fun SubnetInfo(
                     onSubnetClick(subnet.orgId!!)
                 }
             }) {
-            Text(text = subnet.subnet)
-            Text(text = subnet.subnetName)
+            Column {
+                Text(text = subnet.subnet)
+                Text(text = subnet.subnetName)
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            flagUri?.let {
+                CountryImage(
+                    uri = it,
+                    imageLoader = imageLoader,
+                )
+            }
         }
     }
 }

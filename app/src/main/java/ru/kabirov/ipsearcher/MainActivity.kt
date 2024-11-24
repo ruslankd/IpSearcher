@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import ru.kabirov.iporganisationselector.presentation.ui.MainScreen
-import ru.kabirov.uikit.IpSearcherTheme
+import ru.kabirov.uikit.theme.IpSearcherTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

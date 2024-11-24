@@ -10,10 +10,10 @@ sealed class UiState {
 
     class Error(val error: Throwable) : UiState()
 
-    class Success(val subnet: Subnet) : UiState()
+    class Success(val stateData: StateData) : UiState()
 }
 
-internal fun RequestResult<Subnet>.toUiState(): UiState {
+internal fun RequestResult<StateData>.toUiState(): UiState {
     return when (this) {
         is RequestResult.Error -> UiState.Error(error)
         is RequestResult.InProgress -> UiState.Loading

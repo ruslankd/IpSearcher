@@ -2,11 +2,14 @@ package ru.kabirov.data.di
 
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.kabirov.data.api.FlagRepository
 import ru.kabirov.data.impl.IpAddressRepositoryImpl
 import ru.kabirov.data.api.IpAddressRepository
 import ru.kabirov.data.api.OrganisationRepository
+import ru.kabirov.data.impl.FlagRepositoryImpl
 import ru.kabirov.data.impl.OrganisationRepositoryImpl
 
 @Module
@@ -22,4 +25,9 @@ abstract class RepositoryModule {
     abstract fun bindOrganisationRepository(
         organisationRepositoryImpl: OrganisationRepositoryImpl,
     ): OrganisationRepository
+
+    @Binds
+    abstract fun bindFlagRepository(
+        flagRepositoryImpl: FlagRepositoryImpl,
+    ): FlagRepository
 }

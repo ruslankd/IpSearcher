@@ -2,6 +2,7 @@ package ru.kabirov.organisation_info.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.ImageLoader
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import ru.kabirov.data.model.Organisation
 import ru.kabirov.data.model.RequestResult
+import ru.kabirov.data.domain.GetFlagUriUseCase
 import ru.kabirov.organisation_info.domain.GetOrganisationUseCase
 import ru.kabirov.organisation_info.domain.GetSubnetsUseCase
 
@@ -24,6 +26,8 @@ import ru.kabirov.organisation_info.domain.GetSubnetsUseCase
 class OrganisationInfoViewModel @AssistedInject constructor(
     getOrganisationUseCase: GetOrganisationUseCase,
     private val getSubnetsUseCase: GetSubnetsUseCase,
+    private val getFlagUriUseCase: GetFlagUriUseCase,
+    val imageLoader: ImageLoader,
     @Assisted orgId: String,
 ) : ViewModel() {
 
@@ -58,8 +62,9 @@ class OrganisationInfoViewModel @AssistedInject constructor(
                     is RequestResult.Success -> {
                         RequestResult.Success(
                             StateData(
-                                org,
-                                subnetsResult.data
+                                organisation = org,
+                                subnets = subnetsResult.data,
+                                flagUri = org.country?.let { getFlagUriUseCase.invoke(it) },
                             )
                         )
                     }
@@ -73,6 +78,12 @@ class OrganisationInfoViewModel @AssistedInject constructor(
                     }
                 }
             }
+    }
+
+    fun getFlagUri(country: String?): String? {
+        return country?.let {
+            getFlagUriUseCase.invoke(country)
+        }
     }
 
     @AssistedFactory

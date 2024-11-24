@@ -6,4 +6,5 @@ import ru.kabirov.data.model.Subnet
 data class StateData(
     val organisation: Organisation,
     val subnets: List<Subnet>,
+    val flagUri: String?,
 )

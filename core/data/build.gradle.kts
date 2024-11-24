@@ -29,6 +29,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.javax.inject)
 
+    api(libs.coil.compose)
+    api(libs.coil.network.okhttp)
+
     implementation(projects.core.database)
     implementation(projects.core.ripeApi)
 

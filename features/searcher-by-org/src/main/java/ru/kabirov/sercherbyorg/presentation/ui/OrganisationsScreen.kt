@@ -22,9 +22,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ru.kabirov.data.model.Organisation
+import coil3.ImageLoader
+import ru.kabirov.sercherbyorg.presentation.viewmodel.OrganisationWithFlagUri
 import ru.kabirov.sercherbyorg.presentation.viewmodel.OrganisationsViewModel
 import ru.kabirov.sercherbyorg.presentation.viewmodel.UiState
+import ru.kabirov.uikit.CountryImage
 
 @Composable
 fun OrganisationsScreen(
@@ -42,6 +44,7 @@ fun OrganisationsScreen(
     OrganisationsContent(
         modifier = modifier,
         state = state,
+        imageLoader = viewModel.imageLoader,
         onOrganisationClick = onOrganisationClick
     )
 }
@@ -50,12 +53,13 @@ fun OrganisationsScreen(
 fun OrganisationsContent(
     state: UiState,
     onOrganisationClick: (String) -> Unit,
+    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         when (state) {
             is UiState.None -> Unit
-            is UiState.Success -> Organisations(state, onOrganisationClick, modifier)
+            is UiState.Success -> Organisations(state, onOrganisationClick, imageLoader, modifier)
             is UiState.Error -> ErrorMessage(state, modifier)
             is UiState.Loading -> ProgressIndicator(modifier)
         }
@@ -66,9 +70,9 @@ fun OrganisationsContent(
 fun Organisations(
     state: UiState.Success,
     onSubnetClick: (String) -> Unit,
+    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     val organisations = state.organisations
 
     Box(modifier = modifier) {
@@ -79,7 +83,7 @@ fun Organisations(
             items(items = organisations, key = {
                 it.id
             }) {
-                OrganisationItem(org = it, onSubnetClick = onSubnetClick)
+                OrganisationItem(org = it, onSubnetClick = onSubnetClick, imageLoader = imageLoader)
             }
         }
     }
@@ -87,8 +91,9 @@ fun Organisations(
 
 @Composable
 private fun OrganisationItem(
-    org: Organisation,
+    org: OrganisationWithFlagUri,
     onSubnetClick: (String) -> Unit,
+    imageLoader: ImageLoader,
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -100,8 +105,11 @@ private fun OrganisationItem(
             Text(text = org.id)
         }
         Spacer(modifier = Modifier.weight(1f))
-        org.country?.let { country ->
-            Text(text = country)
+        org.flagUri?.let { uri ->
+            CountryImage(
+                uri = uri,
+                imageLoader = imageLoader
+            )
         }
     }
 }

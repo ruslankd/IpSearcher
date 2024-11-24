@@ -20,9 +20,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.ImageLoader
 import ru.kabirov.data.model.Organisation
 import ru.kabirov.organisation_info.presentation.viewmodel.OrganisationInfoViewModel
 import ru.kabirov.organisation_info.presentation.viewmodel.UiState
+import ru.kabirov.uikit.CountryImage
 
 @Composable
 fun OrganisationInfoScreen(
@@ -36,18 +38,24 @@ fun OrganisationInfoScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    OrganisationInfoContent(modifier = modifier, state = state)
+    OrganisationInfoContent(modifier = modifier, state = state, imageLoader = viewModel.imageLoader)
 }
 
 @Composable
 fun OrganisationInfoContent(
     state: UiState,
+    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         when (state) {
             is UiState.None -> Unit
-            is UiState.Success -> OrganisationInfo(state, modifier)
+            is UiState.Success -> OrganisationInfo(
+                state = state,
+                modifier = modifier,
+                imageLoader = imageLoader,
+            )
+
             is UiState.Error -> ErrorMessage(state, modifier)
             is UiState.Loading -> ProgressIndicator(modifier)
         }
@@ -57,15 +65,20 @@ fun OrganisationInfoContent(
 @Composable
 fun OrganisationInfo(
     state: UiState.Success,
+    imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     val organisation = state.stateData.organisation
     val subnets = state.stateData.subnets
+    val flagUri = state.stateData.flagUri
 
     Box(modifier = modifier) {
         Column(modifier = Modifier.fillMaxSize()) {
-            OrganisationTitle(organisation)
+            OrganisationTitle(
+                organisation = organisation,
+                flagUri = flagUri,
+                imageLoader = imageLoader,
+            )
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(items = subnets, key = {
                     it.subnet
@@ -78,12 +91,19 @@ fun OrganisationInfo(
 }
 
 @Composable
-private fun OrganisationTitle(organisation: Organisation) {
+private fun OrganisationTitle(
+    organisation: Organisation,
+    imageLoader: ImageLoader,
+    flagUri: String?,
+) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Text(text = organisation.name)
         Spacer(modifier = Modifier.weight(1f))
-        organisation.country?.let {
-            Text(text = it)
+        flagUri?.let {
+            CountryImage(
+                uri = it,
+                imageLoader = imageLoader,
+            )
         }
     }
 }

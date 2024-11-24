@@ -10,10 +10,10 @@ sealed class UiState {
 
     class Error(val error: Throwable) : UiState()
 
-    class Success(val organisations: List<Organisation>) : UiState()
+    class Success(val organisations: List<OrganisationWithFlagUri>) : UiState()
 }
 
-internal fun RequestResult<List<Organisation>>.toUiState(): UiState {
+internal fun RequestResult<List<OrganisationWithFlagUri>>.toUiState(): UiState {
     return when (this) {
         is RequestResult.Error -> UiState.Error(error)
         is RequestResult.InProgress -> UiState.Loading

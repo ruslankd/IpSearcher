@@ -1,4 +1,4 @@
-package ru.kabirov.uikit
+package ru.kabirov.uikit.theme
 
 import android.app.Activity
 import android.os.Build

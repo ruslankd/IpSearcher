@@ -30,21 +30,21 @@ interface IpSearcherDao {
     @Query("SELECT has_all_subnets FROM check_org WHERE org_id = :orgId")
     fun hasAllSubnetsByOrgId(orgId: String): Flow<Boolean>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSubnet(subnet: SubnetDbo)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSubnets(subnets: List<SubnetDbo>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrganisation(organisation: OrganisationDbo)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrganisations(organisations: List<OrganisationDbo>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQueries(organisationNameQueries: List<OrganisationNameQuery>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHasAllSubnet(checkAllSubnetForOrganisation: CheckAllSubnetForOrganisation)
 }
