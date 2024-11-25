@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +26,8 @@ import ru.kabirov.searcherbyip.R
 import ru.kabirov.searcherbyip.presentation.viewmodel.SubnetViewModel
 import ru.kabirov.searcherbyip.presentation.viewmodel.UiState
 import ru.kabirov.uikit.CountryImage
+import ru.kabirov.uikit.ErrorMessage
+import ru.kabirov.uikit.ProgressIndicator
 
 @Composable
 fun SubnetScreen(
@@ -57,7 +62,7 @@ fun SubnetContent(
         when (state) {
             is UiState.None -> Unit
             is UiState.Success -> SubnetInfo(state, onSubnetClick, imageLoader, modifier)
-            is UiState.Error -> ErrorMessage(state, modifier)
+            is UiState.Error -> ErrorMessage(state.error.message ?: "", modifier)
             is UiState.Loading -> ProgressIndicator(modifier)
         }
     }
@@ -74,54 +79,37 @@ fun SubnetInfo(
     val subnet = state.stateData.subnet
     val flagUri = state.stateData.flagUri
 
-    Box(modifier = modifier) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                if (subnet.orgId == null) {
-                    Toast
-                        .makeText(
-                            context,
-                            context.getString(R.string.not_affiliated_with_any_organization),
-                            Toast.LENGTH_LONG
-                        )
-                        .show()
-                } else {
-                    onSubnetClick(subnet.orgId!!)
-                }
-            }) {
-            Column {
+    Box(modifier = modifier.padding(16.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    if (subnet.orgId == null) {
+                        Toast
+                            .makeText(
+                                context,
+                                context.getString(R.string.not_affiliated_with_any_organization),
+                                Toast.LENGTH_LONG
+                            )
+                            .show()
+                    } else {
+                        onSubnetClick(subnet.orgId!!)
+                    }
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(text = subnet.subnet)
                 Text(text = subnet.subnetName)
             }
-            Spacer(modifier = Modifier.weight(1f))
             flagUri?.let {
+                Spacer(modifier = Modifier.width(2.dp))
                 CountryImage(
+                    modifier = Modifier.size(28.dp),
                     uri = it,
                     imageLoader = imageLoader,
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun ErrorMessage(
-    state: UiState.Error,
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    Toast.makeText(context, state.error.message, Toast.LENGTH_LONG).show()
-}
-
-@Composable
-private fun ProgressIndicator(
-    modifier: Modifier = Modifier,
-) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(
-            modifier = modifier
-                .height(80.dp)
-        )
     }
 }

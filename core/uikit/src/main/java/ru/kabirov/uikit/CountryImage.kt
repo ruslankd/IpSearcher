@@ -1,6 +1,7 @@
 package ru.kabirov.uikit
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import coil3.ImageLoader
@@ -11,9 +12,11 @@ import coil3.request.crossfade
 @Composable
 fun CountryImage(
     uri: String,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader,
+    modifier: Modifier = Modifier
 ) {
     AsyncImage(
+        modifier = modifier,
         model = ImageRequest.Builder(LocalContext.current)
             .data(uri)
             .crossfade(true)

@@ -1,24 +1,26 @@
 package ru.kabirov.sercherbyorg.presentation.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,6 +29,8 @@ import ru.kabirov.sercherbyorg.presentation.viewmodel.OrganisationWithFlagUri
 import ru.kabirov.sercherbyorg.presentation.viewmodel.OrganisationsViewModel
 import ru.kabirov.sercherbyorg.presentation.viewmodel.UiState
 import ru.kabirov.uikit.CountryImage
+import ru.kabirov.uikit.ErrorMessage
+import ru.kabirov.uikit.ProgressIndicator
 
 @Composable
 fun OrganisationsScreen(
@@ -60,7 +64,7 @@ fun OrganisationsContent(
         when (state) {
             is UiState.None -> Unit
             is UiState.Success -> Organisations(state, onOrganisationClick, imageLoader, modifier)
-            is UiState.Error -> ErrorMessage(state, modifier)
+            is UiState.Error -> ErrorMessage(state.error.message ?: "", modifier)
             is UiState.Loading -> ProgressIndicator(modifier)
         }
     }
@@ -78,12 +82,24 @@ fun Organisations(
     Box(modifier = modifier) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            items(items = organisations, key = {
-                it.id
-            }) {
-                OrganisationItem(org = it, onSubnetClick = onSubnetClick, imageLoader = imageLoader)
+            itemsIndexed(items = organisations, key = { _, org ->
+                org.id
+            }) { index, org ->
+                OrganisationItem(
+                    org = org,
+                    onSubnetClick = onSubnetClick,
+                    imageLoader = imageLoader
+                )
+
+                if (index < organisations.lastIndex)
+                    HorizontalDivider(
+                        modifier = Modifier.padding(top = 4.dp),
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    )
             }
         }
     }
@@ -95,42 +111,25 @@ private fun OrganisationItem(
     onSubnetClick: (String) -> Unit,
     imageLoader: ImageLoader,
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .clickable {
-            onSubnetClick(org.id)
-        }) {
-        Column {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onSubnetClick(org.id)
+            },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(text = org.name)
-            Text(text = org.id)
+            Text(text = "ID: ${org.id}")
         }
-        Spacer(modifier = Modifier.weight(1f))
         org.flagUri?.let { uri ->
+            Spacer(modifier = Modifier.width(2.dp))
             CountryImage(
+                modifier = Modifier.size(28.dp),
                 uri = uri,
                 imageLoader = imageLoader
             )
         }
-    }
-}
-
-@Composable
-private fun ErrorMessage(
-    state: UiState.Error,
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    Toast.makeText(context, state.error.message, Toast.LENGTH_LONG).show()
-}
-
-@Composable
-private fun ProgressIndicator(
-    modifier: Modifier = Modifier,
-) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(
-            modifier = modifier
-                .height(80.dp)
-        )
     }
 }

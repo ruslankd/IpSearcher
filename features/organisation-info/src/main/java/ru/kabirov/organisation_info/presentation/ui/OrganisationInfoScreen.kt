@@ -1,30 +1,47 @@
 package ru.kabirov.organisation_info.presentation.ui
 
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import ru.kabirov.data.model.Organisation
+import ru.kabirov.organisation_info.R
 import ru.kabirov.organisation_info.presentation.viewmodel.OrganisationInfoViewModel
 import ru.kabirov.organisation_info.presentation.viewmodel.UiState
 import ru.kabirov.uikit.CountryImage
+import ru.kabirov.uikit.ErrorMessage
+import ru.kabirov.uikit.ProgressIndicator
 
 @Composable
 fun OrganisationInfoScreen(
@@ -56,7 +73,7 @@ fun OrganisationInfoContent(
                 imageLoader = imageLoader,
             )
 
-            is UiState.Error -> ErrorMessage(state, modifier)
+            is UiState.Error -> ErrorMessage(state.error.message ?: "", modifier)
             is UiState.Loading -> ProgressIndicator(modifier)
         }
     }
@@ -79,11 +96,30 @@ fun OrganisationInfo(
                 flagUri = flagUri,
                 imageLoader = imageLoader,
             )
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(items = subnets, key = {
-                    it.subnet
-                }) {
-                    Text(text = it.subnet)
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp),
+                text = stringResource(R.string.subnets),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium
+            )
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                itemsIndexed(items = subnets, key = { _, subnet ->
+                    subnet.subnet
+                }) { index, subnet ->
+                    Text(text = subnet.subnet)
+
+                    if (index < subnets.lastIndex)
+                        HorizontalDivider(
+                            modifier = Modifier.padding(top = 4.dp),
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        )
                 }
             }
         }
@@ -96,35 +132,44 @@ private fun OrganisationTitle(
     imageLoader: ImageLoader,
     flagUri: String?,
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Text(text = organisation.name)
-        Spacer(modifier = Modifier.weight(1f))
-        flagUri?.let {
-            CountryImage(
-                uri = it,
-                imageLoader = imageLoader,
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 16.dp)
+            .background(
+                brush =
+                Brush.linearGradient(
+                    0.0f to MaterialTheme.colorScheme.primary,
+                    1.0f to
+                            MaterialTheme.colorScheme.secondary
+                                .copy(alpha = 0.6f)
+                                .compositeOver(MaterialTheme.colorScheme.primary),
+                ),
+                shape = RoundedCornerShape(16.dp)
             )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = organisation.name,
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            flagUri?.let {
+                Spacer(modifier = Modifier.width(2.dp))
+                CountryImage(
+                    modifier = Modifier.size(32.dp),
+                    uri = it,
+                    imageLoader = imageLoader,
+                )
+            }
+
         }
-    }
-}
-
-@Composable
-private fun ErrorMessage(
-    state: UiState.Error,
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    Toast.makeText(context, state.error.message, Toast.LENGTH_LONG).show()
-}
-
-@Composable
-private fun ProgressIndicator(
-    modifier: Modifier = Modifier,
-) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(
-            modifier = modifier
-                .height(80.dp)
-        )
     }
 }

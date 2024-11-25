@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
@@ -25,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import ru.kabirov.iporganisationselector.presentation.viewmodel.MainViewModel
 import ru.kabirov.iporganisationselector.navigation.NavClass
+import ru.kabirov.iporganisationselector.presentation.ui.searcher.Searcher
 import ru.kabirov.organisation_info.presentation.ui.OrganisationInfoScreen
 import ru.kabirov.searcherbyip.presentation.ui.SubnetScreen
 import ru.kabirov.sercherbyorg.presentation.ui.OrganisationsScreen
@@ -33,6 +33,7 @@ import ru.kabirov.sercherbyorg.presentation.ui.OrganisationsScreen
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
     val focusManager = LocalFocusManager.current
@@ -57,9 +58,8 @@ fun MainScreen(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(8.dp)
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
@@ -77,7 +77,6 @@ fun MainScreen(
                 focusManager.clearFocus()
             }
         )
-        Spacer(modifier = Modifier.height(8.dp))
         NavHost(navController = navController, startDestination = NavClass.Empty) {
             val modifier: Modifier = Modifier.weight(1f)
             composable<NavClass.Empty> {
