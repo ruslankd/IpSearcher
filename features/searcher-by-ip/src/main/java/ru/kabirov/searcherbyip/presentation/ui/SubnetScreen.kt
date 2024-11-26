@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,19 +39,22 @@ fun SubnetScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val notAffiliatedMessage =
+        viewModel.getResourceString(R.string.not_affiliated_with_any_organization)
 
     SubnetContent(
         modifier = modifier,
         state = state,
+        notAffiliatedMessage = notAffiliatedMessage,
         onSubnetClick = onSubnetClick,
         imageLoader = viewModel.imageLoader,
     )
-
 }
 
 @Composable
 fun SubnetContent(
     state: UiState,
+    notAffiliatedMessage: String,
     onSubnetClick: (String) -> Unit,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
@@ -61,7 +62,14 @@ fun SubnetContent(
     Box(modifier = modifier) {
         when (state) {
             is UiState.None -> Unit
-            is UiState.Success -> SubnetInfo(state, onSubnetClick, imageLoader, modifier)
+            is UiState.Success -> SubnetInfo(
+                state = state,
+                notAffiliatedMessage = notAffiliatedMessage,
+                onSubnetClick = onSubnetClick,
+                imageLoader = imageLoader,
+                modifier = modifier
+            )
+
             is UiState.Error -> ErrorMessage(state.error.message ?: "", modifier)
             is UiState.Loading -> ProgressIndicator(modifier)
         }
@@ -71,6 +79,7 @@ fun SubnetContent(
 @Composable
 fun SubnetInfo(
     state: UiState.Success,
+    notAffiliatedMessage: String,
     onSubnetClick: (String) -> Unit,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
@@ -88,7 +97,7 @@ fun SubnetInfo(
                         Toast
                             .makeText(
                                 context,
-                                context.getString(R.string.not_affiliated_with_any_organization),
+                                notAffiliatedMessage,
                                 Toast.LENGTH_LONG
                             )
                             .show()

@@ -1,4 +1,4 @@
-package ru.kabirov.ipsearcher.di
+package ru.kabirov.common.di
 
 import dagger.Module
 import dagger.Provides
@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object DispatchersModule {
     @Provides
     @Singleton
     fun provideAppCoroutineDispatchers(): AppDispatchers = AppDispatchers()

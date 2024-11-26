@@ -54,13 +54,20 @@ fun OrganisationInfoScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val subnetsLabel = viewModel.getResourceString(R.string.subnets)
 
-    OrganisationInfoContent(modifier = modifier, state = state, imageLoader = viewModel.imageLoader)
+    OrganisationInfoContent(
+        modifier = modifier,
+        state = state,
+        imageLoader = viewModel.imageLoader,
+        subnetsLabel = subnetsLabel,
+    )
 }
 
 @Composable
 fun OrganisationInfoContent(
     state: UiState,
+    subnetsLabel: String,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
@@ -69,6 +76,7 @@ fun OrganisationInfoContent(
             is UiState.None -> Unit
             is UiState.Success -> OrganisationInfo(
                 state = state,
+                subnetsLabel = subnetsLabel,
                 modifier = modifier,
                 imageLoader = imageLoader,
             )
@@ -82,6 +90,7 @@ fun OrganisationInfoContent(
 @Composable
 fun OrganisationInfo(
     state: UiState.Success,
+    subnetsLabel: String,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
@@ -100,7 +109,7 @@ fun OrganisationInfo(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(top = 16.dp),
-                text = stringResource(R.string.subnets),
+                text = subnetsLabel,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleMedium
             )

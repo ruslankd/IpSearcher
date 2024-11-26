@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(projects.core.uikit)
+    implementation(projects.core.common)
     implementation(projects.features.searcherByOrg)
     implementation(projects.features.searcherByIp)
     implementation(projects.features.organisationInfo)

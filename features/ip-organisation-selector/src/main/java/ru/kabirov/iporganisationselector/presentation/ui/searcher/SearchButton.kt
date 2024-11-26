@@ -15,12 +15,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.res.stringResource
-import ru.kabirov.iporganisationselector.R
 
 @Composable
 fun SearchButton(
     modifier: Modifier = Modifier,
+    searchButtonContentDescription: String,
     onClick: () -> Unit,
     containerColor: Color = MaterialTheme.colorScheme.primary,
     shape: Shape = RoundedCornerShape(36),
@@ -47,7 +46,7 @@ fun SearchButton(
         ) {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = stringResource(R.string.search_btn)
+                contentDescription = searchButtonContentDescription,
             )
         }
     }

@@ -12,15 +12,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import ru.kabirov.iporganisationselector.R
 
 @Composable
 fun Searcher(
@@ -30,6 +26,9 @@ fun Searcher(
     hasBackBtn: Boolean = false,
     onBackBtnClick: () -> Unit = {},
     modifier: Modifier = Modifier,
+    searchButtonContentDescription: String,
+    backButtonContentDescription: String,
+    placeholderText: String,
 ) {
     Row(
         modifier = modifier
@@ -42,14 +41,13 @@ fun Searcher(
             modifier = Modifier.weight(1f),
             value = query,
             onValueChange = onQueryChange,
+            placeholderText = placeholderText,
             leadingIcon = if (hasBackBtn) {
                 {
                     Icon(
                         modifier = Modifier.clickable { onBackBtnClick() },
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = stringResource(
-                            R.string.back_button
-                        )
+                        contentDescription = backButtonContentDescription
                     )
                 }
             } else null,
@@ -63,7 +61,8 @@ fun Searcher(
             modifier = Modifier
                 .height(IntrinsicSize.Max)
                 .width(IntrinsicSize.Max),
-            onClick = onSearchClick
+            onClick = onSearchClick,
+            searchButtonContentDescription = searchButtonContentDescription,
         )
     }
 }

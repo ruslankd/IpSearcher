@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="subnets">Подсети</string>
+    <string name="the_organization_does_not_have_any_subnets">Организация не имеет подсетей</string>
+</resources>

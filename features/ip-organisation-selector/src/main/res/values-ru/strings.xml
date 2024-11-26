@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_btn">кнопка поиска</string>
+    <string name="back_button">кнопка назад</string>
+    <string name="search_placeholder">IP или название организации</string>
+</resources>

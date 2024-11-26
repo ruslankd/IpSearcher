@@ -19,9 +19,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import ru.kabirov.common.AppDispatchers
 import ru.kabirov.common.ErrorHandler
+import ru.kabirov.common.resource.ResourceManager
 import ru.kabirov.data.model.Organisation
 import ru.kabirov.data.model.RequestResult
 import ru.kabirov.data.domain.GetFlagUriUseCase
+import ru.kabirov.organisation_info.R
 import ru.kabirov.organisation_info.domain.GetOrganisationUseCase
 import ru.kabirov.organisation_info.domain.GetSubnetsUseCase
 
@@ -33,6 +35,7 @@ class OrganisationInfoViewModel @AssistedInject constructor(
     val imageLoader: ImageLoader,
     dispatchers: AppDispatchers,
     private val errorHandler: ErrorHandler,
+    private val resourceManager: ResourceManager,
     @Assisted orgId: String,
 ) : ViewModel() {
 
@@ -85,7 +88,12 @@ class OrganisationInfoViewModel @AssistedInject constructor(
                         val error = errorHandler.handleError(subnetsResult.error)
                         RequestResult.Error(
                             when (error) {
-                                is ErrorHandler.NotFoundException -> Throwable("The organization does not have any subnets.")
+                                is ErrorHandler.NotFoundException -> Throwable(
+                                    resourceManager.getString(
+                                        R.string.the_organization_does_not_have_any_subnets
+                                    )
+                                )
+
                                 else -> error
                             }
                         )
@@ -102,6 +110,10 @@ class OrganisationInfoViewModel @AssistedInject constructor(
         return country?.let {
             getFlagUriUseCase.invoke(country)
         }
+    }
+
+    fun getResourceString(resId: Int): String {
+        return resourceManager.getString(resId)
     }
 
     @AssistedFactory

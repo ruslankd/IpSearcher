@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import ru.kabirov.common.AppDispatchers
 import ru.kabirov.common.ErrorHandler
+import ru.kabirov.common.resource.ResourceManager
 import ru.kabirov.data.domain.GetFlagUriUseCase
 import ru.kabirov.data.model.RequestResult
 import ru.kabirov.searcherbyip.domain.GetSubnetUseCase
@@ -25,6 +26,7 @@ class SubnetViewModel @AssistedInject constructor(
     getFlagUriUseCase: GetFlagUriUseCase,
     val imageLoader: ImageLoader,
     private val errorHandler: ErrorHandler,
+    private val resourceManager: ResourceManager,
     dispatchers: AppDispatchers,
     @Assisted ipAddress: String,
 ) : ViewModel() {
@@ -47,6 +49,9 @@ class SubnetViewModel @AssistedInject constructor(
         .flowOn(dispatchers.io)
         .stateIn(viewModelScope, SharingStarted.Lazily, UiState.None)
 
+    fun getResourceString(resId: Int): String {
+        return resourceManager.getString(resId)
+    }
 
     @AssistedFactory
     interface SubnetViewModelFactory {

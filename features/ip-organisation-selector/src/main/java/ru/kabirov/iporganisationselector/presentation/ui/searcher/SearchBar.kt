@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
@@ -26,6 +27,7 @@ internal fun SearchBar(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    placeholderText: String,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
     keyboardActions: KeyboardActions = KeyboardActions(),
     leadingIcon: @Composable() (() -> Unit)? = null
@@ -53,7 +55,7 @@ internal fun SearchBar(
                 innerTextField = innerTextField,
                 placeholder = {
                     Text(
-                        text = "Search places",
+                        text = placeholderText,
                     )
                 },
                 label = null,
