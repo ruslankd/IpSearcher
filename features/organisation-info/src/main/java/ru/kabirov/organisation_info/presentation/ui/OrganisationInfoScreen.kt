@@ -1,6 +1,5 @@
 package ru.kabirov.organisation_info.presentation.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,15 +9,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,9 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,12 +49,15 @@ fun OrganisationInfoScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val subnetsLabel = viewModel.getResourceString(R.string.subnets)
+    val emptySubnetsLabel =
+        viewModel.getResourceString(R.string.the_organization_does_not_have_any_subnets)
 
     OrganisationInfoContent(
         modifier = modifier,
         state = state,
         imageLoader = viewModel.imageLoader,
         subnetsLabel = subnetsLabel,
+        emptySubnetsLabel = emptySubnetsLabel,
     )
 }
 
@@ -68,6 +65,7 @@ fun OrganisationInfoScreen(
 fun OrganisationInfoContent(
     state: UiState,
     subnetsLabel: String,
+    emptySubnetsLabel: String,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
@@ -77,6 +75,7 @@ fun OrganisationInfoContent(
             is UiState.Success -> OrganisationInfo(
                 state = state,
                 subnetsLabel = subnetsLabel,
+                emptySubnetsLabel = emptySubnetsLabel,
                 modifier = modifier,
                 imageLoader = imageLoader,
             )
@@ -91,6 +90,7 @@ fun OrganisationInfoContent(
 fun OrganisationInfo(
     state: UiState.Success,
     subnetsLabel: String,
+    emptySubnetsLabel: String,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
@@ -105,30 +105,44 @@ fun OrganisationInfo(
                 flagUri = flagUri,
                 imageLoader = imageLoader,
             )
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp),
-                text = subnetsLabel,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleMedium
-            )
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                itemsIndexed(items = subnets, key = { _, subnet ->
-                    subnet.subnet
-                }) { index, subnet ->
-                    Text(text = subnet.subnet)
+            if (subnets.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    text = emptySubnetsLabel,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            } else {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 16.dp),
+                    text = subnetsLabel,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    itemsIndexed(items = subnets, key = { _, subnet ->
+                        subnet.subnet
+                    }) { index, subnet ->
+                        Column {
+                            Text(text = subnet.subnet)
+                            Text(text = subnet.subnetName)
+                        }
 
-                    if (index < subnets.lastIndex)
-                        HorizontalDivider(
-                            modifier = Modifier.padding(top = 4.dp),
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                        )
+                        if (index < subnets.lastIndex)
+                            HorizontalDivider(
+                                modifier = Modifier.padding(top = 4.dp),
+                                thickness = 1.dp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                            )
+                    }
                 }
             }
         }

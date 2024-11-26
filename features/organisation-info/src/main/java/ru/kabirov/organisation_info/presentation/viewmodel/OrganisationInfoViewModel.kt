@@ -20,10 +20,9 @@ import kotlinx.coroutines.flow.stateIn
 import ru.kabirov.common.AppDispatchers
 import ru.kabirov.common.ErrorHandler
 import ru.kabirov.common.resource.ResourceManager
+import ru.kabirov.data.domain.GetFlagUriUseCase
 import ru.kabirov.data.model.Organisation
 import ru.kabirov.data.model.RequestResult
-import ru.kabirov.data.domain.GetFlagUriUseCase
-import ru.kabirov.organisation_info.R
 import ru.kabirov.organisation_info.domain.GetOrganisationUseCase
 import ru.kabirov.organisation_info.domain.GetSubnetsUseCase
 
@@ -85,18 +84,7 @@ class OrganisationInfoViewModel @AssistedInject constructor(
                     }
 
                     is RequestResult.Error -> {
-                        val error = errorHandler.handleError(subnetsResult.error)
-                        RequestResult.Error(
-                            when (error) {
-                                is ErrorHandler.NotFoundException -> Throwable(
-                                    resourceManager.getString(
-                                        R.string.the_organization_does_not_have_any_subnets
-                                    )
-                                )
-
-                                else -> error
-                            }
-                        )
+                        RequestResult.Error(errorHandler.handleError(subnetsResult.error))
                     }
 
                     is RequestResult.InProgress -> {

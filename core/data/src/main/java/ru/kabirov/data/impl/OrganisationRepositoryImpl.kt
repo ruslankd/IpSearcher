@@ -4,17 +4,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import retrofit2.HttpException
 import ru.kabirov.data.api.OrganisationRepository
 import ru.kabirov.data.mapper.toOrganisation
 import ru.kabirov.data.mapper.toOrganisationDboList
-import ru.kabirov.data.mapper.toOrganisationList
 import ru.kabirov.data.mapper.toSubnet
 import ru.kabirov.data.mapper.toSubnetDboList
-import ru.kabirov.data.mapper.toSubnetList
 import ru.kabirov.data.model.Organisation
 import ru.kabirov.data.model.RequestResult
 import ru.kabirov.data.model.Subnet
-import ru.kabirov.data.model.toRequestResult
 import ru.kabirov.database.IpSearcherDatabase
 import ru.kabirov.database.models.CheckAllSubnetForOrganisation
 import ru.kabirov.database.models.OrganisationNameQuery
@@ -36,15 +34,30 @@ class OrganisationRepositoryImpl @Inject constructor(
                         saveOrganisationsDtoToCache(apiRequest.getOrThrow(), name)
                         RequestResult.InProgress()
                     } else {
-                        RequestResult.Error(apiRequest.exceptionOrNull() ?: Throwable())
+                        apiRequest.exceptionOrNull()?.let {
+                            if (it is HttpException && it.code() == 404) {
+                                database.ipSearcherDao.insertQueries(
+                                    listOf(
+                                        OrganisationNameQuery(
+                                            nameQuery = name,
+                                            orgId = "empty",
+                                        )
+                                    )
+                                )
+                                RequestResult.Success(emptyList())
+                            } else {
+                                RequestResult.Error(it)
+                            }
+                        } ?: RequestResult.Error(Throwable())
                     }
+                } else if(orgIds.first() == "empty") {
+                    RequestResult.Success(emptyList())
                 } else {
                     RequestResult.Success(
                         orgIds.map { orgId ->
                             database.ipSearcherDao.getOrganisationById(orgId)
                         }
                             .map { it.toOrganisation() })
-
                 }
             }
         return merge(start, organisationFlow)
@@ -78,6 +91,16 @@ class OrganisationRepositoryImpl @Inject constructor(
                         saveSubnetsDtoToCache(apiRequest.getOrThrow(), orgId)
                         RequestResult.InProgress()
                     } else {
+                        apiRequest.exceptionOrNull()?.let {
+                            if (it is HttpException && it.code() == 404) {
+                                database.ipSearcherDao.insertHasAllSubnet(
+                                    CheckAllSubnetForOrganisation(
+                                        orgId = orgId,
+                                        true
+                                    )
+                                )
+                            }
+                        }
                         RequestResult.Error(apiRequest.exceptionOrNull() ?: Throwable())
                     }
                 }

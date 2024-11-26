@@ -41,12 +41,14 @@ fun ErrorMessage(
                 text = stringResource(R.string.error),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onErrorContainer,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = error,
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onErrorContainer,
             )
         }
     }

@@ -23,6 +23,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.retrofit)
+
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.hilt.compiler)
 

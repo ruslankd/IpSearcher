@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import ru.kabirov.common.AppDispatchers
 import ru.kabirov.common.ErrorHandler
+import ru.kabirov.common.resource.ResourceManager
 import ru.kabirov.data.domain.GetFlagUriUseCase
 import ru.kabirov.data.model.RequestResult
 import ru.kabirov.sercherbyorg.domain.GetOrganisationsUseCase
@@ -24,6 +25,7 @@ class OrganisationsViewModel @AssistedInject internal constructor(
     getOrganisationsUseCase: GetOrganisationsUseCase,
     getFlagUriUseCase: GetFlagUriUseCase,
     private val errorHandler: ErrorHandler,
+    private val resourceManager: ResourceManager,
     dispatchers: AppDispatchers,
     val imageLoader: ImageLoader,
     @Assisted query: String,
@@ -35,13 +37,7 @@ class OrganisationsViewModel @AssistedInject internal constructor(
         .map { requestResult ->
             when (requestResult) {
                 is RequestResult.Error -> {
-                    val error = errorHandler.handleError(requestResult.error)
-                    RequestResult.Error(
-                        when (error) {
-                            is ErrorHandler.NotFoundException -> Throwable("No matches found")
-                            else -> error
-                        }
-                    )
+                    RequestResult.Error(errorHandler.handleError(requestResult.error))
                 }
 
                 is RequestResult.InProgress -> RequestResult.InProgress()
@@ -63,6 +59,10 @@ class OrganisationsViewModel @AssistedInject internal constructor(
         }
         .flowOn(dispatchers.io)
         .stateIn(viewModelScope, SharingStarted.Lazily, UiState.None)
+
+    fun getResourceString(resId: Int): String {
+        return resourceManager.getString(resId)
+    }
 
     @AssistedFactory
     interface OrganisationsViewModelFactory {
