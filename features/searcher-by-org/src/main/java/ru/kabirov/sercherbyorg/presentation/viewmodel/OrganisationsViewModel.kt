@@ -10,8 +10,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import ru.kabirov.common.AppDispatchers
 import ru.kabirov.common.ErrorHandler
 import ru.kabirov.data.domain.GetFlagUriUseCase
 import ru.kabirov.data.model.RequestResult
@@ -22,6 +24,7 @@ class OrganisationsViewModel @AssistedInject internal constructor(
     getOrganisationsUseCase: GetOrganisationsUseCase,
     getFlagUriUseCase: GetFlagUriUseCase,
     private val errorHandler: ErrorHandler,
+    dispatchers: AppDispatchers,
     val imageLoader: ImageLoader,
     @Assisted query: String,
 ) : ViewModel() {
@@ -58,6 +61,7 @@ class OrganisationsViewModel @AssistedInject internal constructor(
         .map {
             it.toUiState()
         }
+        .flowOn(dispatchers.io)
         .stateIn(viewModelScope, SharingStarted.Lazily, UiState.None)
 
     @AssistedFactory

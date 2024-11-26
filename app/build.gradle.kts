@@ -58,5 +58,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(projects.core.uikit)
+    implementation(projects.core.common)
     implementation(projects.features.ipOrganisationSelector)
 }

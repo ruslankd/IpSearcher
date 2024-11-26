@@ -14,8 +14,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import ru.kabirov.common.AppDispatchers
 import ru.kabirov.common.ErrorHandler
 import ru.kabirov.data.model.Organisation
 import ru.kabirov.data.model.RequestResult
@@ -29,6 +31,7 @@ class OrganisationInfoViewModel @AssistedInject constructor(
     private val getSubnetsUseCase: GetSubnetsUseCase,
     private val getFlagUriUseCase: GetFlagUriUseCase,
     val imageLoader: ImageLoader,
+    dispatchers: AppDispatchers,
     private val errorHandler: ErrorHandler,
     @Assisted orgId: String,
 ) : ViewModel() {
@@ -57,6 +60,7 @@ class OrganisationInfoViewModel @AssistedInject constructor(
                 }
             }
         }
+        .flowOn(dispatchers.io)
         .stateIn(viewModelScope, SharingStarted.Lazily, UiState.None)
 
 
