@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.dagger.hilt)
+    alias(libs.plugins.kapt)
 }
 
 android {
@@ -15,6 +18,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        resourceConfigurations.addAll(setOf("en", "ru"))
     }
 
     buildTypes {
@@ -27,20 +32,36 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "21"
     }
+
+    buildFeatures {
+        compose = true
+    }
+
+
 }
 
 dependencies {
+    implementation(libs.dagger.hilt)
+    kapt(libs.dagger.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(projects.core.uikit)
+    implementation(projects.core.common)
+    implementation(projects.features.ipOrganisationSelector)
 }

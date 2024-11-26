@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google {
@@ -21,3 +23,12 @@ dependencyResolutionManagement {
 
 rootProject.name = "IpSearcher"
 include(":app")
+include(":core:ripe-api")
+include(":core:uikit")
+include(":features:searcher-by-org")
+include(":core:database")
+include(":features:ip-organisation-selector")
+include(":features:searcher-by-ip")
+include(":core:data")
+include(":features:organisation-info")
+include(":core:common")

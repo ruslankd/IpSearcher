@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="subnets">Subnets</string>
+    <string name="the_organization_does_not_have_any_subnets">The organization does not have any subnets</string>
+</resources>
