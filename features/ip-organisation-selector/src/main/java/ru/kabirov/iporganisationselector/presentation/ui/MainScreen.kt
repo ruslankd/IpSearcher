@@ -42,17 +42,9 @@ fun MainScreen(
     val query by viewModel.query.collectAsStateWithLifecycle()
 
     LaunchedEffect(navigator) {
-        if (navigator is NavClass.Organisation) {
-            navController.navigate(navigator) {
-                popUpTo(0) {
-                    inclusive = true
-                }
-            }
-        } else if (navigator is NavClass.Subnet) {
-            navController.navigate(navigator) {
-                popUpTo(0) {
-                    inclusive = true
-                }
+        navController.navigate(navigator) {
+            popUpTo(0) {
+                inclusive = true
             }
         }
     }

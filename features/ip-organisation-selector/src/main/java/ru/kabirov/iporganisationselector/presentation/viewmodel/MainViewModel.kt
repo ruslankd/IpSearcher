@@ -1,9 +1,12 @@
 package ru.kabirov.iporganisationselector.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import ru.kabirov.iporganisationselector.navigation.NavClass
 import javax.inject.Inject
 
@@ -21,7 +24,9 @@ class MainViewModel @Inject constructor(
         _query.value = query.trim()
     }
 
-    fun onSearchClick() {
+    fun onSearchClick() = viewModelScope.launch {
+        _navigator.value = NavClass.Empty
+        delay(500)
         if (ipAddressValidator.isValidIpAddress(_query.value)) {
             _navigator.value = NavClass.Subnet(_query.value.lowercase())
         } else {

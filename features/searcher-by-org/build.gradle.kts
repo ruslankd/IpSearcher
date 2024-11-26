@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(projects.core.data)
+    implementation(projects.core.common)
     implementation(projects.core.uikit)
 
     testImplementation(libs.junit)
